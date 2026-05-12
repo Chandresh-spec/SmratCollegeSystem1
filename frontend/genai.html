@@ -254,29 +254,16 @@
 <div class="shell">
 
   <header>
-    <div class="avatar">🤖</div>
+    <div class="avatar">🧠</div>
     <div class="hinfo">
-      <h1>Tunga</h1>
-      <p>pdf · rag · study assistant</p>
-    </div>
-
-    <div class="sub-wrap">
-      <div class="subject-badge" id="subBadge">
-        📚 Subject <strong id="subLabel">1</strong>
-      </div>
-
-      <div class="sub-drop" id="subDrop">
-        <label><input type="radio" name="sub" value="1" checked> Subject 1</label>
-        <label><input type="radio" name="sub" value="2"> Subject 2</label>
-        <label><input type="radio" name="sub" value="3"> Subject 3</label>
-        <label><input type="radio" name="sub" value="4"> Subject 4</label>
-      </div>
+      <h1>General AI</h1>
+      <p>llm · fast · study assistant</p>
     </div>
   </header>
 
   <div class="messages" id="msgs">
     <div class="welcome" id="welcomeMsg">
-      <h2>Hey, I'm Lumi 👋</h2>
+      <h2>Hey, I'm General AI 👋</h2>
       <p>Ask questions from your PDFs and notes. I'll try to explain clearly.</p>
     </div>
   </div>
@@ -292,53 +279,17 @@
 
 <script>
   // API endpoint - local for now
-  const API = "http://127.0.0.1:8000/Genai/api/chat/";
+  const API = "http://127.0.0.1:8000/Genai/api/genai/";
 
   // read access token from URL — passed by student.html when opening this page
   const urlParams = new URLSearchParams(window.location.search);
   const ACCESS_TOKEN = urlParams.get("token") || "";
 
-  let activeSubId = null;
   let isSendingMsg = false;
 
   const msgs = document.getElementById("msgs");
   const input = document.getElementById("msgInput");
   const sendBtn = document.getElementById("sendBtn");
-  const subDrop = document.getElementById("subDrop");
-
-  // subject dropdown toggle
-  document.getElementById("subBadge").onclick = () => {
-    subDrop.classList.toggle("open");
-  };
-
-  async function loadSubjects() {
-      try {
-          const res = await fetch("http://127.0.0.1:8000/academic/api/subjects/", {
-              headers: { 'Authorization': `Bearer ${ACCESS_TOKEN}` }
-          });
-          const data = await res.json();
-          if(data.length > 0) {
-              activeSubId = data[0].id;
-              document.getElementById("subLabel").textContent = data[0].sub_name;
-              
-              subDrop.innerHTML = data.map(sub => `
-                  <label><input type="radio" name="sub" value="${sub.id}" ${sub.id === activeSubId ? 'checked' : ''}> ${sub.sub_name}</label>
-              `).join('');
-              
-              document.querySelectorAll("input[name=sub]").forEach(r => {
-                  r.onchange = () => {
-                      activeSubId = r.value;
-                      document.getElementById("subLabel").textContent = r.parentElement.textContent.trim();
-                      console.log("Selected subject:", activeSubId);
-                      subDrop.classList.remove("open");
-                  };
-              });
-          }
-      } catch(e) {
-          console.error("Failed to load subjects:", e);
-      }
-  }
-  loadSubjects();
 
   function timeNow() {
     return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -389,7 +340,6 @@
           "Authorization": `Bearer ${ACCESS_TOKEN}`   // <-- token added here
         },
         body: JSON.stringify({
-          subject_id: activeSubId,
           question: q
         })
       });

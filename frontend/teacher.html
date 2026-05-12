@@ -3,2037 +3,353 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduHub — Faculty Portal</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Nunito:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>Faculty Dashboard — EduHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --bg: #0d0f14;
-            --bg2: #13161d;
-            --bg3: #1a1e28;
-            --border: rgba(255,255,255,0.07);
-            --border-hover: rgba(255,255,255,0.14);
-            --text: #e8eaf0;
-            --text-muted: #6b7280;
-            --text-dim: #9ca3af;
-            --accent: #6c63ff;
-            --accent2: #ff6584;
-            --accent3: #43e97b;
-            --gold: #f7b731;
-            --sidebar-w: 260px;
-            --radius: 16px;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            font-family: 'Nunito', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            overflow: hidden;
+            font-family:'Inter',sans-serif;
+            background: #0f0c29; color:#fff;
         }
-
-        /* ── SIDEBAR ── */
+        
+        /* Sidebar */
         .sidebar {
-            width: var(--sidebar-w);
-            background: var(--bg2);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 0; left: 0; bottom: 0;
-            z-index: 100;
+            width: 250px; height: 100vh; position: fixed;
+            background: rgba(15,12,41,0.9); border-right: 1px solid rgba(255,255,255,0.05);
+            padding: 24px 0; display:flex; flex-direction:column;
+            backdrop-filter: blur(20px);
         }
-
-        .sidebar-logo {
-            padding: 1.75rem 1.5rem 1.25rem;
-            border-bottom: 1px solid var(--border);
+        .logo {
+            font-size: 20px; font-weight: 700; padding: 0 24px 32px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
-        .logo-text {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #6c63ff, #a855f7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.03em;
-        }
-
-        .logo-sub {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-top: 0.15rem;
-        }
-
-        .sidebar-profile {
-            padding: 1.25rem 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.875rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .avatar {
-            width: 42px; height: 42px;
-            background: linear-gradient(135deg, var(--accent), #a855f7);
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-family: 'Syne', sans-serif;
-            font-weight: 700; font-size: 0.875rem;
-            color: white; flex-shrink: 0;
-        }
-
-        .profile-info .name { font-weight: 700; font-size: 0.9rem; color: var(--text); }
-
-        .profile-info .role-badge {
-            display: inline-block;
-            padding: 0.125rem 0.5rem;
-            background: rgba(108,99,255,0.15);
-            border: 1px solid rgba(108,99,255,0.3);
-            border-radius: 100px;
-            font-size: 0.7rem; color: #a78bfa; font-weight: 600;
-            margin-top: 0.2rem;
-        }
-
-        .sidebar-nav {
-            flex: 1;
-            padding: 1.25rem 0.875rem;
-            overflow-y: auto;
-        }
-
-        .nav-section-label {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--text-muted);
-            font-weight: 700;
-            padding: 0.5rem 0.625rem 0.5rem;
-            margin-bottom: 0.25rem;
-        }
-
+        .nav-items { flex:1; }
         .nav-item {
-            display: flex; align-items: center; gap: 0.75rem;
-            padding: 0.75rem 0.875rem;
-            border-radius: 12px; cursor: pointer;
-            transition: all 0.2s ease;
-            color: var(--text-dim); font-weight: 600; font-size: 0.9rem;
-            margin-bottom: 0.125rem; position: relative;
-            text-decoration: none;
+            padding: 16px 24px; color: rgba(255,255,255,0.6);
+            display: flex; align-items:center; gap: 12px;
+            text-decoration:none; transition: all 0.3s;
         }
-
-        .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
-
-        .nav-item.active {
-            background: rgba(108,99,255,0.15);
-            color: #a78bfa;
+        .nav-item:hover, .nav-item.active {
+            color: #fff; background: rgba(102,126,234,0.1);
+            border-right: 3px solid #667eea;
         }
-
-        .nav-item.active::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 20%; bottom: 20%;
-            width: 3px;
-            background: var(--accent);
-            border-radius: 0 4px 4px 0;
+        .user-profile {
+            padding: 24px; border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex; align-items:center; gap:12px;
         }
-
-        .nav-icon { width: 20px; height: 20px; opacity: 0.8; flex-shrink: 0; }
-
-        .nav-badge {
-            margin-left: auto;
-            background: var(--accent2);
-            color: white;
-            font-size: 0.65rem; font-weight: 700;
-            padding: 0.15rem 0.5rem;
-            border-radius: 100px;
-            min-width: 20px; text-align: center;
+        .avatar {
+            width:40px; height:40px; border-radius:50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display:flex; align-items:center; justify-content:center;
+            font-weight:600;
         }
+        .user-info h4 { font-size:14px; }
+        .user-info p { font-size:12px; color:rgba(255,255,255,0.5); }
+        .logout-btn { color:#ff6b81; cursor:pointer; background:none; border:none; margin-left:auto; }
 
-        .sidebar-footer {
-            padding: 1rem 0.875rem;
-            border-top: 1px solid var(--border);
+        /* Main Content */
+        .main-content {
+            margin-left: 250px; padding: 32px 48px;
         }
-
-        .signout-btn {
-            display: flex; align-items: center; gap: 0.75rem;
-            width: 100%; padding: 0.75rem 0.875rem;
-            border-radius: 12px; border: none; background: none;
-            cursor: pointer; color: var(--text-muted);
-            font-family: inherit; font-weight: 600; font-size: 0.9rem;
-            transition: all 0.2s;
+        .header {
+            display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;
         }
-
-        .signout-btn:hover { background: rgba(255,101,132,0.1); color: var(--accent2); }
-
-        /* ── MAIN ── */
-        .main {
-            margin-left: var(--sidebar-w);
-            flex: 1; display: flex; flex-direction: column;
-            height: 100vh; overflow: hidden;
+        .header h1 { font-size: 28px; font-weight: 700; }
+        .btn-upload {
+            padding: 12px 24px; border-radius: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2); border:none;
+            color: #fff; font-weight: 600; cursor:pointer;
+            display: flex; align-items:center; gap:8px; transition: transform 0.3s;
         }
+        .btn-upload:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102,126,234,0.3); }
 
-        /* ── TOPBAR ── */
-        .topbar {
-            background: var(--bg2);
-            border-bottom: 1px solid var(--border);
-            padding: 0 2rem; height: 64px;
-            display: flex; align-items: center; gap: 1rem;
-            flex-shrink: 0;
-        }
-
-        .topbar-greeting { flex: 1; }
-
-        .topbar-greeting h2 {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.1rem; font-weight: 700; color: var(--text);
-        }
-
-        .topbar-greeting h2 span {
-            background: linear-gradient(135deg, #6c63ff, #f7b731);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .topbar-greeting p { font-size: 0.78rem; color: var(--text-muted); }
-
-        .search-bar {
-            display: flex; align-items: center; gap: 0.5rem;
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            border-radius: 12px; padding: 0.5rem 1rem;
-            width: 240px; transition: all 0.2s;
-        }
-
-        .search-bar:focus-within {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(108,99,255,0.1);
-        }
-
-        .search-bar input {
-            background: none; border: none; outline: none;
-            color: var(--text); font-family: inherit; font-size: 0.85rem; width: 100%;
-        }
-
-        .search-bar input::placeholder { color: var(--text-muted); }
-
-        .notif-btn {
-            width: 40px; height: 40px;
-            border-radius: 12px; background: var(--bg3);
-            border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; transition: all 0.2s;
-        }
-
-        .notif-btn:hover { border-color: var(--accent); }
-
-        .notif-dot {
-            position: absolute; top: 8px; right: 8px;
-            width: 7px; height: 7px;
-            background: var(--accent2);
-            border-radius: 50%;
-            border: 2px solid var(--bg2);
-        }
-
-        /* ── CONTENT ── */
-        .content { flex: 1; overflow-y: auto; padding: 2rem; }
-
-        .content::-webkit-scrollbar { width: 4px; }
-        .content::-webkit-scrollbar-track { background: transparent; }
-        .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-        /* ── STATS GRID ── */
+        /* Stats Grid */
         .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem; margin-bottom: 1.5rem;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 40px;
         }
-
         .stat-card {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            position: relative; overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
-        .stat-card::after { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; }
-        .stat-card.yellow::after { background: radial-gradient(circle at top right, rgba(247,183,49,0.07), transparent 60%); }
-        .stat-card.red::after    { background: radial-gradient(circle at top right, rgba(255,101,132,0.07), transparent 60%); }
-        .stat-card.purple::after { background: radial-gradient(circle at top right, rgba(108,99,255,0.07), transparent 60%); }
-        .stat-card.green::after  { background: radial-gradient(circle at top right, rgba(67,233,123,0.07), transparent 60%); }
-        .stat-card:hover::after  { opacity: 1; }
-
-        .stat-icon { font-size: 1.5rem; margin-bottom: 1rem; display: block; }
-
-        .stat-value {
-            font-family: 'Syne', sans-serif;
-            font-size: 2.25rem; font-weight: 800;
-            color: var(--text); line-height: 1; margin-bottom: 0.375rem;
-        }
-
-        .stat-label {
-            font-size: 0.82rem; color: var(--text-muted);
-            font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
-        }
-
-        .stat-change {
-            display: flex; align-items: center; gap: 0.3rem;
-            margin-top: 0.75rem; font-size: 0.78rem; font-weight: 600;
-        }
-
-        .stat-change.up   { color: var(--accent3); }
-        .stat-change.down { color: var(--accent2); }
-        .stat-change.warn { color: var(--gold); }
-
-        /* ── UPLOAD BANNER ── */
-        .upload-banner {
-            background: linear-gradient(135deg, rgba(108,99,255,0.12), rgba(168,85,247,0.08));
-            border: 1px solid rgba(108,99,255,0.25);
-            border-radius: var(--radius);
-            padding: 1.5rem 2rem;
-            display: flex; align-items: center; gap: 1.5rem;
-            margin-bottom: 1.5rem;
-            position: relative; overflow: hidden;
-        }
-
-        .upload-banner::before {
-            content: '';
-            position: absolute; right: -40px; top: -40px;
-            width: 180px; height: 180px;
-            background: radial-gradient(circle, rgba(108,99,255,0.12), transparent 70%);
-            border-radius: 50%;
-        }
-
-        .upload-banner-icon { font-size: 2.5rem; flex-shrink: 0; }
-
-        .upload-banner-text h3 {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 0.25rem;
-        }
-
-        .upload-banner-text p { font-size: 0.875rem; color: var(--text-dim); }
-
-        .upload-cta {
-            margin-left: auto;
-            padding: 0.75rem 1.5rem;
-            background: var(--accent); color: white;
-            border: none; border-radius: 12px;
-            font-family: inherit; font-weight: 700; font-size: 0.875rem;
-            cursor: pointer; transition: all 0.2s;
-            display: flex; align-items: center; gap: 0.5rem;
-            white-space: nowrap; position: relative; z-index: 1;
-        }
-
-        .upload-cta:hover {
-            background: #5b52e0; transform: translateY(-1px);
-            box-shadow: 0 8px 24px rgba(108,99,255,0.3);
-        }
-
-        /* ── BOTTOM GRID ── */
-        .bottom-grid {
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 1.5rem;
-        }
-
-        /* ── CARD ── */
-        .card {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-        }
-
-        .card-header {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .card-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 1rem; font-weight: 700; color: var(--text);
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-
-        .view-all-btn {
-            font-size: 0.8rem; color: var(--accent); font-weight: 600;
-            cursor: pointer; background: none; border: none;
-            font-family: inherit; transition: color 0.2s;
-        }
-
-        .view-all-btn:hover { color: #a78bfa; }
-
-        /* ── UPLOADS TABLE ── */
-        .uploads-table { width: 100%; border-collapse: collapse; }
-
-        .uploads-table thead th {
-            padding: 0.75rem 1.5rem;
-            text-align: left; font-size: 0.7rem;
-            text-transform: uppercase; letter-spacing: 0.08em;
-            color: var(--text-muted); font-weight: 700;
-            border-bottom: 1px solid var(--border);
-            background: var(--bg3);
-        }
-
-        .uploads-table tbody tr {
-            border-bottom: 1px solid var(--border);
-            transition: background 0.15s;
-        }
-
-        .uploads-table tbody tr:last-child { border-bottom: none; }
-        .uploads-table tbody tr:hover { background: rgba(255,255,255,0.02); }
-
-        .uploads-table td {
-            padding: 1rem 1.5rem;
-            font-size: 0.875rem; color: var(--text-dim);
-        }
-
-        .file-cell { display: flex; align-items: center; gap: 0.75rem; }
-
-        .file-icon {
-            width: 36px; height: 36px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; flex-shrink: 0;
-        }
-
-        .file-name { font-weight: 600; color: var(--text); font-size: 0.875rem; }
-        .file-date { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.1rem; }
-
-        .subject-tag {
-            display: inline-block;
-            padding: 0.25rem 0.625rem;
-            background: rgba(108,99,255,0.1);
-            border: 1px solid rgba(108,99,255,0.2);
-            border-radius: 8px;
-            font-size: 0.75rem; font-weight: 700; color: #a78bfa;
-        }
-
-        .status-pill {
-            display: inline-flex; align-items: center; gap: 0.35rem;
-            padding: 0.3rem 0.75rem;
-            border-radius: 100px; font-size: 0.75rem; font-weight: 700;
-        }
-
-        .status-pill::before {
-            content: ''; width: 6px; height: 6px; border-radius: 50%;
-        }
-
-        .status-pill.approved {
-            background: rgba(67,233,123,0.1); color: var(--accent3);
-            border: 1px solid rgba(67,233,123,0.2);
-        }
-        .status-pill.approved::before { background: var(--accent3); }
-
-        .status-pill.pending {
-            background: rgba(247,183,49,0.1); color: var(--gold);
-            border: 1px solid rgba(247,183,49,0.2);
-        }
-        .status-pill.pending::before { background: var(--gold); }
-
-        .status-pill.rejected {
-            background: rgba(255,101,132,0.1); color: var(--accent2);
-            border: 1px solid rgba(255,101,132,0.2);
-        }
-        .status-pill.rejected::before { background: var(--accent2); }
-
-        .view-link {
-            color: var(--accent); font-size: 0.8rem; font-weight: 600;
-            cursor: pointer; background: none; border: none;
-            font-family: inherit; transition: color 0.2s;
-        }
-
-        .view-link:hover { color: #a78bfa; }
-
-        /* ── REVIEW QUEUE ── */
-        .review-list { padding: 0.5rem 0; }
-
-        .review-item {
-            display: flex; gap: 0.875rem;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-            transition: background 0.15s;
-        }
-
-        .review-item:last-child { border-bottom: none; }
-        .review-item:hover { background: rgba(255,255,255,0.02); }
-
-        .review-thumb {
-            width: 40px; height: 40px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.1rem; flex-shrink: 0;
-        }
-
-        .review-info { flex: 1; min-width: 0; }
-
-        .review-filename {
-            font-weight: 700; font-size: 0.85rem; color: var(--text);
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-
-        .review-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem; }
-
-        .review-actions {
-            display: flex; gap: 0.5rem; align-items: flex-start; margin-top: 0.5rem;
-        }
-
-        .btn-approve, .btn-reject {
-            padding: 0.3rem 0.75rem; border-radius: 8px; border: none;
-            font-family: inherit; font-size: 0.72rem; font-weight: 700;
-            cursor: pointer; transition: all 0.2s;
-        }
-
-        .btn-approve {
-            background: rgba(67,233,123,0.1); color: var(--accent3);
-            border: 1px solid rgba(67,233,123,0.25);
-        }
-        .btn-approve:hover { background: rgba(67,233,123,0.2); }
-        .btn-approve:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .btn-reject {
-            background: rgba(255,101,132,0.1); color: var(--accent2);
-            border: 1px solid rgba(255,101,132,0.25);
-        }
-        .btn-reject:hover { background: rgba(255,101,132,0.2); }
-        .btn-reject:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .btn-view-file {
-            padding: 0.3rem 0.75rem; border-radius: 8px;
-            background: rgba(108,99,255,0.1); color: #a78bfa;
-            border: 1px solid rgba(108,99,255,0.25);
-            font-family: inherit; font-size: 0.72rem; font-weight: 700;
-            cursor: pointer; transition: all 0.2s;
-        }
-        .btn-view-file:hover { background: rgba(108,99,255,0.2); }
-
-        .review-badge {
-            padding: 0.15rem 0.5rem;
-            background: rgba(247,183,49,0.1);
-            border: 1px solid rgba(247,183,49,0.25);
-            border-radius: 100px;
-            font-size: 0.65rem; font-weight: 700; color: var(--gold);
-            margin-left: auto; flex-shrink: 0; height: fit-content;
-        }
-
-        /* ── EMPTY STATE ── */
-        .empty-state {
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            padding: 3rem; color: var(--text-muted); text-align: center;
-        }
-
-        .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-        .empty-state p { font-size: 0.9rem; }
-
-        /* ── TOAST ── */
-        .toast-container {
-            position: fixed; bottom: 1.5rem; right: 1.5rem;
-            z-index: 999; display: flex; flex-direction: column; gap: 0.75rem;
-        }
-
-        .toast {
-            padding: 1rem 1.25rem; border-radius: 14px;
-            font-weight: 600; font-size: 0.875rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-            animation: toastIn 0.3s ease;
-            display: flex; align-items: center; gap: 0.625rem;
-            min-width: 280px;
-        }
-
-        @keyframes toastIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to   { transform: translateY(0); opacity: 1; }
-        }
-
-        .toast.success { background: #0d2d1f; border: 1px solid rgba(67,233,123,0.25); color: var(--accent3); }
-        .toast.error   { background: #2d0d15; border: 1px solid rgba(255,101,132,0.25); color: var(--accent2); }
-        .toast.info    { background: #1a1530; border: 1px solid rgba(108,99,255,0.25); color: #a78bfa; }
-
-        /* ════════════════════════════════════════
-           ENHANCED UPLOAD MODAL STYLES
-           ════════════════════════════════════════ */
-        .ul-modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.78);
-            z-index: 200;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.25s;
-            backdrop-filter: blur(6px);
-            padding: 20px;
-        }
-        .ul-modal-overlay.open { opacity: 1; pointer-events: all; }
-
-        .ul-modal-box {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 620px;
-            max-height: 92vh;
-            overflow-y: auto;
-            position: relative;
-            transform: scale(0.95) translateY(12px);
-            transition: transform 0.28s ease;
-            box-shadow: 0 24px 64px rgba(0,0,0,0.6);
-        }
-        .ul-modal-box::-webkit-scrollbar { width: 4px; }
-        .ul-modal-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-        .ul-modal-overlay.open .ul-modal-box { transform: scale(1) translateY(0); }
-
-        /* top accent bar */
-        .ul-modal-box::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: linear-gradient(90deg, var(--accent), #a855f7);
-            border-radius: 20px 20px 0 0;
-        }
-
-        /* ── Modal Header ── */
-        .ul-modal-header {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 22px 26px 16px;
-            border-bottom: 1px solid var(--border);
-        }
-        .ul-modal-title-row { display: flex; align-items: center; gap: 12px; }
-        .ul-modal-icon {
-            width: 42px; height: 42px; border-radius: 11px;
-            background: linear-gradient(135deg, rgba(108,99,255,0.2), rgba(168,85,247,0.15));
-            border: 1px solid rgba(108,99,255,0.3);
-            display: flex; align-items: center; justify-content: center; font-size: 20px;
-        }
-        .ul-modal-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.1rem; font-weight: 700; color: var(--text);
-        }
-        .ul-modal-subtitle { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
-        .ul-modal-close-btn {
-            width: 34px; height: 34px; border-radius: 8px;
-            background: var(--bg3); border: 1px solid var(--border);
-            color: var(--text-muted); font-size: 15px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
-        }
-        .ul-modal-close-btn:hover { border-color: var(--accent2); color: var(--accent2); }
-
-        /* ── Progress Steps ── */
-        .ul-steps-row {
-            display: flex; align-items: center; justify-content: center;
-            padding: 16px 26px;
-            border-bottom: 1px solid var(--border);
-        }
-        .ul-step { display: flex; align-items: center; gap: 8px; }
-        .ul-step-num {
-            width: 28px; height: 28px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; font-weight: 700;
-            background: var(--bg3); border: 1px solid var(--border); color: var(--text-muted);
-            transition: all 0.3s;
-        }
-        .ul-step.active .ul-step-num {
-            background: linear-gradient(135deg, var(--accent), #a855f7);
-            border-color: transparent; color: #fff;
-        }
-        .ul-step.done .ul-step-num { background: var(--accent3); border-color: transparent; color: #fff; }
-        .ul-step-label { font-size: 12px; font-weight: 700; color: var(--text-muted); transition: color 0.3s; font-family: 'Nunito', sans-serif; }
-        .ul-step.active .ul-step-label { color: #a78bfa; }
-        .ul-step.done .ul-step-label { color: var(--accent3); }
-        .ul-step-line { width: 44px; height: 1px; background: var(--border); margin: 0 4px; transition: background 0.3s; }
-        .ul-step-line.done { background: var(--accent3); }
-
-        /* ── Modal Body ── */
-        .ul-modal-body { padding: 22px 26px; }
-        .ul-form-step { display: none; }
-        .ul-form-step.active { display: block; animation: ulFadeUp 0.2s ease; }
-        @keyframes ulFadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* ── Alert ── */
-        .ul-alert {
-            padding: 10px 14px; border-radius: 10px; margin-bottom: 14px;
-            font-size: 13px; font-weight: 600; border-left: 3px solid; display: none;
-            font-family: 'Nunito', sans-serif;
-        }
-        .ul-alert.show { display: block; animation: ulFadeUp 0.2s ease; }
-        .ul-alert.error { background: rgba(255,101,132,0.1); border-color: var(--accent2); color: #fca5a5; }
-        .ul-alert.success { background: rgba(67,233,123,0.1); border-color: var(--accent3); color: #6ee7b7; }
-        .ul-alert.info { background: rgba(108,99,255,0.1); border-color: var(--accent); color: #c4b5fd; }
-
-        /* ── Field Groups ── */
-        .ul-fg { margin-bottom: 16px; }
-        .ul-fg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
-        .ul-label {
-            display: flex; align-items: center; gap: 6px;
-            font-size: 11px; font-weight: 700; color: var(--text-dim);
-            text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 7px;
-        }
-        .ul-req { color: var(--accent2); font-size: 13px; line-height: 1; }
-        .ul-opt {
-            font-size: 9px; font-weight: 600; color: var(--text-muted);
-            background: var(--bg3); border: 1px solid var(--border);
-            padding: 1px 7px; border-radius: 20px; text-transform: none; letter-spacing: 0;
-        }
-
-        .ul-input, .ul-select, .ul-textarea {
-            width: 100%; padding: 11px 14px;
-            background: var(--bg3); border: 1px solid var(--border);
-            border-radius: 10px; color: var(--text);
-            font-family: 'Nunito', sans-serif; font-size: 14px;
-            outline: none; transition: all 0.2s;
-        }
-        .ul-input:focus, .ul-select:focus, .ul-textarea:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(108,99,255,0.12);
-        }
-        .ul-input::placeholder, .ul-textarea::placeholder { color: var(--text-muted); }
-        .ul-select option { background: var(--bg3); }
-        .ul-textarea { resize: vertical; min-height: 80px; }
-
-        /* Subject wrapper */
-        .ul-subject-wrap { position: relative; }
-        .ul-subject-spinner {
-            position: absolute; right: 36px; top: 50%; transform: translateY(-50%);
-            width: 14px; height: 14px;
-            border: 2px solid rgba(108,99,255,0.3); border-top-color: var(--accent);
-            border-radius: 50%; animation: ulSpin 0.7s linear infinite; display: none;
-        }
-        @keyframes ulSpin { to { transform: translateY(-50%) rotate(360deg); } }
-        .ul-subject-count {
-            position: absolute; right: 36px; top: 50%; transform: translateY(-50%);
-            font-size: 10px; color: #a78bfa; font-weight: 700;
-            background: rgba(108,99,255,0.12); padding: 2px 7px; border-radius: 20px; display: none;
-        }
-        .ul-subject-info {
-            display: none; margin-top: 7px; padding: 8px 12px;
-            background: rgba(108,99,255,0.07); border: 1px solid rgba(108,99,255,0.18);
-            border-radius: 8px; font-size: 12px; color: var(--text-muted);
-        }
-        .ul-subject-info.show { display: block; }
-        .ul-subject-info strong { color: #a78bfa; }
-
-        /* Semester filter chips */
-        .ul-sem-chips { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 10px; }
-        .ul-sem-chip {
-            padding: 5px 13px; border-radius: 20px; font-size: 11px; font-weight: 700;
-            cursor: pointer; transition: all 0.2s;
-            background: var(--bg3); border: 1px solid var(--border); color: var(--text-muted);
-            font-family: 'Nunito', sans-serif;
-        }
-        .ul-sem-chip:hover { border-color: var(--accent); color: #a78bfa; }
-        .ul-sem-chip.active { background: rgba(108,99,255,0.15); border-color: var(--accent); color: #a78bfa; }
-
-        /* File type cards */
-        .ul-type-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
-        .ul-type-card {
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-            padding: 12px 6px; border-radius: 10px; cursor: pointer; transition: all 0.2s;
-            background: var(--bg3); border: 2px solid var(--border);
-        }
-        .ul-type-card:hover { border-color: rgba(108,99,255,0.4); }
-        .ul-type-card.active { border-color: var(--accent); background: rgba(108,99,255,0.1); }
-        .ul-type-icon { font-size: 22px; line-height: 1; }
-        .ul-type-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
-        .ul-type-card.active .ul-type-label { color: #a78bfa; }
-        .ul-type-card[data-type="PDF"].active { border-color: var(--accent2); background: rgba(255,101,132,0.1); }
-        .ul-type-card[data-type="PDF"].active .ul-type-label { color: var(--accent2); }
-        .ul-type-card[data-type="PPT"].active { border-color: var(--gold); background: rgba(247,183,49,0.1); }
-        .ul-type-card[data-type="PPT"].active .ul-type-label { color: var(--gold); }
-        .ul-type-card[data-type="DOC"].active { border-color: #60a5fa; background: rgba(96,165,250,0.1); }
-        .ul-type-card[data-type="DOC"].active .ul-type-label { color: #60a5fa; }
-        .ul-type-card[data-type="IMG"].active { border-color: var(--accent3); background: rgba(67,233,123,0.1); }
-        .ul-type-card[data-type="IMG"].active .ul-type-label { color: var(--accent3); }
-
-        /* Source toggle */
-        .ul-src-toggle {
-            display: flex; gap: 0; margin-bottom: 12px;
-            background: var(--bg3); border: 1px solid var(--border);
-            border-radius: 8px; padding: 3px;
-        }
-        .ul-src-btn {
-            flex: 1; padding: 8px; border: none; border-radius: 6px;
-            cursor: pointer; font-family: 'Nunito', sans-serif;
-            font-size: 13px; font-weight: 700; color: var(--text-muted); background: none; transition: all 0.2s;
-        }
-        .ul-src-btn.active { background: var(--accent); color: #fff; }
-
-        /* Drop zone */
-        .ul-drop-zone {
-            border: 2px dashed var(--border); border-radius: 12px;
-            padding: 26px 20px; text-align: center; cursor: pointer; transition: all 0.25s;
-            background: var(--bg3); position: relative;
-        }
-        .ul-drop-zone:hover, .ul-drop-zone.drag-over { border-color: var(--accent); background: rgba(108,99,255,0.05); }
-        .ul-drop-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-        .ul-drop-icon { font-size: 30px; margin-bottom: 8px; display: block; }
-        .ul-drop-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-        .ul-drop-sub { font-size: 11px; color: var(--text-muted); }
-        .ul-drop-fmts { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
-        .ul-fmt { font-size: 10px; padding: 2px 9px; border-radius: 20px; font-weight: 800; letter-spacing: 0.5px; }
-        .ul-fmt.pdf { background: rgba(255,101,132,0.1); color: var(--accent2); border: 1px solid rgba(255,101,132,0.2); }
-        .ul-fmt.ppt { background: rgba(247,183,49,0.1); color: var(--gold); border: 1px solid rgba(247,183,49,0.2); }
-        .ul-fmt.doc { background: rgba(96,165,250,0.1); color: #60a5fa; border: 1px solid rgba(96,165,250,0.2); }
-        .ul-fmt.img { background: rgba(67,233,123,0.1); color: var(--accent3); border: 1px solid rgba(67,233,123,0.2); }
-
-        /* File preview */
-        .ul-file-preview {
-            display: none; align-items: center; gap: 12px;
-            padding: 11px 14px; background: var(--bg);
-            border: 1px solid var(--border); border-radius: 10px; margin-top: 10px;
-        }
-        .ul-file-preview.show { display: flex; }
-        .ul-fp-icon { font-size: 22px; flex-shrink: 0; }
-        .ul-fp-name { font-size: 13px; font-weight: 700; color: var(--text); word-break: break-all; }
-        .ul-fp-size { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-        .ul-fp-remove {
-            margin-left: auto; background: none; border: none; color: var(--text-muted);
-            cursor: pointer; font-size: 16px; padding: 4px; transition: color 0.2s; flex-shrink: 0;
-        }
-        .ul-fp-remove:hover { color: var(--accent2); }
-
-        /* Visibility */
-        .ul-vis-row { display: flex; gap: 14px; flex-wrap: wrap; }
-        .ul-vis-row label { display: flex; align-items: center; gap: 7px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-dim); }
-        .ul-vis-row input[type=radio] { accent-color: var(--accent); }
-
-        /* Tags hint */
-        .ul-hint { font-size: 11px; color: var(--text-muted); margin-top: 5px; }
-
-        /* Title count */
-        .ul-title-count { font-size: 11px; color: var(--text-muted); margin-top: 5px; text-align: right; }
-
-        /* Review card (step 2) */
-        .ul-review-card {
-            background: var(--bg3); border: 1px solid var(--border);
-            border-radius: 12px; padding: 18px; margin-bottom: 14px;
-        }
-        .ul-review-card h4 {
-            font-size: 11px; font-weight: 700; color: var(--text-muted);
-            text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px;
-        }
-        .ul-pr-row {
-            display: flex; align-items: flex-start; gap: 10px;
-            padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
-        }
-        .ul-pr-row:last-child { border-bottom: none; padding-bottom: 0; }
-        .ul-pr-label { font-size: 11px; color: var(--text-muted); min-width: 90px; flex-shrink: 0; padding-top: 1px; }
-        .ul-pr-value { font-size: 13px; color: var(--text); font-weight: 600; word-break: break-all; }
-        .ul-pr-badge {
-            display: inline-block; font-size: 11px; font-weight: 800;
-            padding: 2px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .ul-pr-badge.PDF { background: rgba(255,101,132,0.12); color: var(--accent2); }
-        .ul-pr-badge.PPT { background: rgba(247,183,49,0.12); color: var(--gold); }
-        .ul-pr-badge.DOC { background: rgba(96,165,250,0.12); color: #60a5fa; }
-        .ul-pr-badge.IMG { background: rgba(67,233,123,0.12); color: var(--accent3); }
-
-        .ul-review-info-box {
-            background: rgba(108,99,255,0.07); border: 1px solid rgba(108,99,255,0.18);
-            border-radius: 10px; padding: 12px 14px; font-size: 12px; color: var(--text-muted); line-height: 1.7;
-        }
-
-        /* Upload progress (step 3) */
-        .ul-progress-wrap { text-align: center; padding: 20px 0; }
-        .ul-prog-icon { font-size: 50px; margin-bottom: 14px; display: block; animation: ulBounce 0.8s ease infinite alternate; }
-        @keyframes ulBounce { from { transform: translateY(0); } to { transform: translateY(-8px); } }
-        .ul-prog-title { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 5px; }
-        .ul-prog-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; }
-        .ul-prog-bar { height: 6px; background: var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
-        .ul-prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #a855f7); border-radius: 4px; transition: width 0.4s ease; width: 0%; }
-        .ul-prog-pct { font-size: 12px; color: #a78bfa; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
-
-        /* ── Modal Footer ── */
-        .ul-modal-footer {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 14px 26px 20px;
-            border-top: 1px solid var(--border); gap: 10px;
-        }
-        .ul-footer-left { display: flex; gap: 8px; }
-        .ul-footer-right { display: flex; gap: 8px; }
-
-        .ul-btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-            padding: 10px 20px; border: none; border-radius: 10px;
-            font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700;
-            cursor: pointer; transition: all 0.2s;
-        }
-        .ul-btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
-        .ul-btn-ghost:hover { border-color: var(--accent2); color: var(--accent2); }
-        .ul-btn-secondary { background: var(--bg3); border: 1px solid var(--border); color: var(--text); }
-        .ul-btn-secondary:hover { border-color: var(--accent); color: #a78bfa; }
-        .ul-btn-primary {
-            background: var(--accent); color: #fff;
-            box-shadow: 0 4px 16px rgba(108,99,255,0.35);
-        }
-        .ul-btn-primary:hover { background: #5b52e0; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(108,99,255,0.5); }
-        .ul-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .ul-btn-success {
-            background: linear-gradient(135deg, var(--accent3), #059669); color: #fff;
-            box-shadow: 0 4px 16px rgba(67,233,123,0.35);
-        }
-
-        @media (max-width: 1100px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .bottom-grid { grid-template-columns: 1fr; }
-        }
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+            padding: 24px; border-radius: 16px;
+        }
+        .stat-header { display:flex; justify-content:space-between; color:rgba(255,255,255,0.6); font-size:14px; margin-bottom:16px; }
+        .stat-val { font-size: 32px; font-weight: 700; }
+
+        /* Sections */
+        .sections-grid { display:grid; grid-template-columns: 2fr 1fr; gap:24px; }
+        .section-card {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+            padding: 24px; border-radius: 16px;
+        }
+        .section-header { display:flex; justify-content:space-between; margin-bottom:20px; }
+        
+        /* Lists */
+        .list-item {
+            display:flex; justify-content:space-between; align-items:center;
+            padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .list-item:last-child { border-bottom:none; }
+        .item-icon { width:40px; height:40px; border-radius:8px; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; }
+        .item-info { flex:1; margin:0 16px; }
+        .item-info h4 { font-size:15px; margin-bottom:4px; }
+        .item-info p { font-size:13px; color:rgba(255,255,255,0.5); }
+        .status-badge {
+            padding: 4px 10px; border-radius: 12px; font-size:12px; font-weight:600;
+        }
+        .status-approved { background: rgba(46,213,115,0.1); color: #2ed573; }
+        .status-pending { background: rgba(255,165,2,0.1); color: #ffa502; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+            display:none; align-items:center; justify-content:center; z-index:1000;
+        }
+        .modal {
+            background: #1a1a2e; width:100%; max-width:500px;
+            border-radius:20px; border:1px solid rgba(255,255,255,0.1);
+            padding:32px;
+        }
+        .modal-header { display:flex; justify-content:space-between; margin-bottom:24px; }
+        .close-btn { background:none; border:none; color:rgba(255,255,255,0.5); cursor:pointer; font-size:18px; }
+        .form-group { margin-bottom:16px; }
+        .form-group label { display:block; font-size:13px; color:rgba(255,255,255,0.7); margin-bottom:6px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width:100%; padding:12px; background:rgba(255,255,255,0.05);
+            border:1px solid rgba(255,255,255,0.1); border-radius:8px;
+            color:#fff; font-family:'Inter';
+        }
+        .form-group textarea { height:80px; resize:none; }
     </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-    <div class="sidebar-logo">
-        <div class="logo-text">EduHub</div>
-        <div class="logo-sub">Faculty Portal · BCA Dept.</div>
-    </div>
-
-    <div class="sidebar-profile">
-        <div class="avatar" id="avatarInitials">PS</div>
-        <div class="profile-info">
-            <div class="name" id="sidebarName">Prof. Sharma</div>
-            <div class="role-badge">Faculty</div>
+    <aside class="sidebar">
+        <div class="logo">🎓 EduHub</div>
+        <div class="nav-items">
+            <a href="teacher.html" class="nav-item active"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="myuploads.html" class="nav-item"><i class="fas fa-folder"></i> My Uploads</a>
+            <a href="notices.html" class="nav-item"><i class="fas fa-bullhorn"></i> Notices</a>
         </div>
-    </div>
-
-    <nav class="sidebar-nav">
-        <div class="nav-section-label">Main</div>
-
-        <div class="nav-item active" onclick="setActive(this)">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"/></svg>
-            Dashboard
+        <div class="user-profile">
+            <div class="avatar" id="userAvatar">T</div>
+            <div class="user-info">
+                <h4 id="userName">Loading...</h4>
+                <p>Faculty</p>
+            </div>
+            <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
         </div>
+    </aside>
 
-        <div class="nav-item" onclick="openUploadModal(); setActive(this)">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-            Upload Material
+    <main class="main-content">
+        <div class="header">
+            <div>
+                <h1 id="greeting">Welcome back, Professor</h1>
+                <p style="color:rgba(255,255,255,0.5); margin-top:4px;">Here's what's happening with your resources today.</p>
+            </div>
+            <button class="btn-upload" onclick="openModal()"><i class="fas fa-plus"></i> Upload Resource</button>
         </div>
 
-        <div class="nav-item" onclick="window.location.href='myuploads.html'">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
-            My Uploads
-        </div>
-
-        <div class="nav-item" onclick="setActive(this)">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7M4 7c0-2 1-3 3-3h10c2 0 3 1 3 3M4 7h16"/></svg>
-            Repository
-        </div>
-
-        <div class="nav-section-label" style="margin-top:1rem;">Management</div>
-
-        <div class="nav-item" onclick="setActive(this)">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-            Review Uploads
-            <span class="nav-badge" id="reviewBadgeNav">0</span>
-        </div>
-
-        <div class="nav-item" onclick="window.location.href='notices.html'">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-            Notices
-        </div>
-
-        <div class="nav-section-label" style="margin-top:1rem;">Account</div>
-
-        <div class="nav-item" onclick="setActive(this)">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            Settings
-        </div>
-    </nav>
-
-    <div class="sidebar-footer">
-        <button class="signout-btn" onclick="signOut()">
-            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-            Sign Out
-        </button>
-    </div>
-</aside>
-
-<!-- MAIN -->
-<div class="main">
-    <div class="topbar">
-        <div class="topbar-greeting">
-            <h2>Good <span id="greetTime">morning</span>, <span id="greetName">Prof. Sharma</span> 👋</h2>
-            <p id="greetDate">Loading...</p>
-        </div>
-
-        <div class="search-bar">
-            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:#6b7280;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <input type="text" placeholder="Search materials...">
-        </div>
-
-        <div class="notif-btn">
-            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:#9ca3af"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-            <div class="notif-dot"></div>
-        </div>
-    </div>
-
-    <div class="content">
-
-        <!-- STATS -->
         <div class="stats-grid">
-            <div class="stat-card yellow">
-                <span class="stat-icon">📁</span>
-                <div class="stat-value" id="statResources">—</div>
-                <div class="stat-label">Total Resources</div>
-                <div class="stat-change up" id="statResourcesSub">↑ Loading...</div>
+            <div class="stat-card">
+                <div class="stat-header"><span>Total Resources</span><i class="fas fa-file-alt"></i></div>
+                <div class="stat-val" id="statTotal">-</div>
             </div>
-            <div class="stat-card red">
-                <span class="stat-icon">⏳</span>
-                <div class="stat-value" id="statPending">—</div>
-                <div class="stat-label">Pending Approval</div>
-                <div class="stat-change warn" id="statPendingSub">Checking...</div>
+            <div class="stat-card">
+                <div class="stat-header"><span>Views Today</span><i class="fas fa-eye"></i></div>
+                <div class="stat-val" id="statViews">-</div>
             </div>
-            <div class="stat-card purple">
-                <span class="stat-icon">👁️</span>
-                <div class="stat-value" id="statViews">—</div>
-                <div class="stat-label">Views Today</div>
-                <div class="stat-change up" id="statViewsSub">↑ Loading...</div>
+            <div class="stat-card">
+                <div class="stat-header"><span>Pending Approvals</span><i class="fas fa-clock"></i></div>
+                <div class="stat-val" id="statPending">-</div>
             </div>
-            <div class="stat-card green">
-                <span class="stat-icon">🎓</span>
-                <div class="stat-value" id="statStudents">—</div>
-                <div class="stat-label">Active Students</div>
-                <div class="stat-change up" id="statStudentsSub">↑ Loading...</div>
+            <div class="stat-card">
+                <div class="stat-header"><span>Active Students</span><i class="fas fa-users"></i></div>
+                <div class="stat-val" id="statStudents">-</div>
             </div>
         </div>
 
-        <!-- UPLOAD BANNER -->
-        <div class="upload-banner">
-            <div class="upload-banner-icon">📤</div>
-            <div class="upload-banner-text">
-                <h3>Upload New Material</h3>
-                <p>Share notes, slides, PDFs and more with your students.</p>
+        <div class="sections-grid">
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>Recent Uploads</h3>
+                    <a href="myuploads.html" style="color:#667eea; text-decoration:none; font-size:14px;">View All</a>
+                </div>
+                <div id="recentUploadsContainer">
+                    <p style="color:rgba(255,255,255,0.5); text-align:center; padding:20px;">Loading...</p>
+                </div>
             </div>
-            <button class="upload-cta" onclick="openUploadModal()">Go to Upload →</button>
+            
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>Quick Actions</h3>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                    <button class="btn-upload" style="width:100%; justify-content:center;" onclick="openModal()">
+                        <i class="fas fa-file-upload"></i> Upload Notes
+                    </button>
+                    <a href="notices.html" class="btn-upload" style="width:100%; justify-content:center; background:rgba(255,255,255,0.05); color:#fff; text-decoration:none;">
+                        <i class="fas fa-bullhorn"></i> Post Notice
+                    </a>
+                </div>
+            </div>
         </div>
+    </main>
 
-        <!-- BOTTOM GRID -->
-        <div class="bottom-grid">
-
-            <!-- RECENT UPLOADS TABLE -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">📄 My Recent Uploads</div>
-                    <button class="view-all-btn" onclick="window.location.href='myuploads.html'">View All</button>
+    <!-- Upload Modal -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Upload New Resource</h3>
+                <button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="resTitle" required placeholder="Lecture 1: Introduction">
                 </div>
-                <div id="uploadsTableBody">
-                    <div class="empty-state">
-                        <div class="empty-icon">⏳</div>
-                        <p>Loading uploads...</p>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="resDesc" placeholder="Brief notes about this upload..."></textarea>
+                </div>
+                <div class="form-group" style="display:flex; gap:12px;">
+                    <div style="flex:1;">
+                        <label>Subject</label>
+                        <select id="resSubject" required>
+                            <option value="">Loading subjects...</option>
+                        </select>
+                    </div>
+                    <div style="flex:1;">
+                        <label>File Type</label>
+                        <select id="resType" required>
+                            <option value="PDF">PDF Document</option>
+                            <option value="PPT">Presentation</option>
+                            <option value="DOC">Word Document</option>
+                            <option value="IMG">Image</option>
+                        </select>
                     </div>
                 </div>
-            </div>
-
-            <!-- REVIEW QUEUE -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">⏳ Review Queue</div>
-                    <span id="reviewCountBadge" style="padding:0.15rem 0.625rem;background:rgba(247,183,49,0.12);color:var(--gold);border:1px solid rgba(247,183,49,0.25);border-radius:100px;font-size:0.72rem;font-weight:700;">0 pending</span>
+                <div class="form-group">
+                    <label>File</label>
+                    <input type="file" id="resFile" required>
                 </div>
-                <div class="review-list" id="reviewList">
-                    <div class="empty-state">
-                        <div class="empty-icon">⏳</div>
-                        <p>Loading...</p>
-                    </div>
-                </div>
-            </div>
-
+                <button type="submit" class="btn-upload" style="width:100%; justify-content:center; margin-top:24px;" id="submitUploadBtn">
+                    Upload & Publish
+                </button>
+            </form>
         </div>
     </div>
-</div>
 
-<!-- ═══════════════════════════════════════════
-     ENHANCED UPLOAD MODAL (3-Step Wizard)
-     ═══════════════════════════════════════════ -->
-<div class="ul-modal-overlay" id="uploadModal">
-    <div class="ul-modal-box">
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000';
+        const token = localStorage.getItem('access_token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-        <!-- Header -->
-        <div class="ul-modal-header">
-            <div class="ul-modal-title-row">
-                <div class="ul-modal-icon">📤</div>
-                <div>
-                    <div class="ul-modal-title">Upload New Material</div>
-                    <div class="ul-modal-subtitle">Share resources with your students</div>
-                </div>
-            </div>
-            <button class="ul-modal-close-btn" onclick="closeUploadModal()">✕</button>
-        </div>
-
-        <!-- Step indicators -->
-        <div class="ul-steps-row">
-            <div class="ul-step active" id="ul-step-1">
-                <div class="ul-step-num">1</div>
-                <div class="ul-step-label">Details</div>
-            </div>
-            <div class="ul-step-line" id="ul-line-1"></div>
-            <div class="ul-step" id="ul-step-2">
-                <div class="ul-step-num">2</div>
-                <div class="ul-step-label">Review</div>
-            </div>
-            <div class="ul-step-line" id="ul-line-2"></div>
-            <div class="ul-step" id="ul-step-3">
-                <div class="ul-step-num">3</div>
-                <div class="ul-step-label">Upload</div>
-            </div>
-        </div>
-
-        <!-- Body -->
-        <div class="ul-modal-body">
-
-            <div class="ul-alert" id="ul-alert"></div>
-
-            <!-- ── STEP 1: Details ── -->
-            <div class="ul-form-step active" id="ul-form-1">
-
-                <!-- Title -->
-                <div class="ul-fg">
-                    <label class="ul-label">Title <span class="ul-req">*</span></label>
-                    <input class="ul-input" id="ul-title" type="text" placeholder="e.g. DS Unit 3 – Trees" maxlength="120">
-                    <div class="ul-title-count" id="ul-title-count">0 / 120</div>
-                </div>
-
-                <!-- Semester filter chips -->
-                <div class="ul-fg">
-                    <label class="ul-label">Filter Subjects by Semester <span class="ul-opt">optional</span></label>
-                    <div class="ul-sem-chips">
-                        <span class="ul-sem-chip active" data-sem="" onclick="ulFilterSem(this)">All</span>
-                        <span class="ul-sem-chip" data-sem="1" onclick="ulFilterSem(this)">Sem 1</span>
-                        <span class="ul-sem-chip" data-sem="2" onclick="ulFilterSem(this)">Sem 2</span>
-                        <span class="ul-sem-chip" data-sem="3" onclick="ulFilterSem(this)">Sem 3</span>
-                        <span class="ul-sem-chip" data-sem="4" onclick="ulFilterSem(this)">Sem 4</span>
-                        <span class="ul-sem-chip" data-sem="5" onclick="ulFilterSem(this)">Sem 5</span>
-                        <span class="ul-sem-chip" data-sem="6" onclick="ulFilterSem(this)">Sem 6</span>
-                    </div>
-                </div>
-
-                <!-- Subject + File Type -->
-                <div class="ul-fg-row">
-                    <div class="ul-fg" style="margin-bottom:0">
-                        <label class="ul-label">Subject <span class="ul-req">*</span></label>
-                        <div class="ul-subject-wrap">
-                            <select class="ul-select" id="ul-subject" onchange="ulOnSubjectChange()">
-                                <option value="">Loading subjects…</option>
-                            </select>
-                            <div class="ul-subject-spinner" id="ul-subj-spin"></div>
-                            <div class="ul-subject-count" id="ul-subj-count"></div>
-                        </div>
-                        <div class="ul-subject-info" id="ul-subj-info"></div>
-                    </div>
-
-                    <div class="ul-fg" style="margin-bottom:0">
-                        <label class="ul-label">File Type <span class="ul-req">*</span></label>
-                        <div class="ul-type-cards">
-                            <div class="ul-type-card" data-type="PDF" onclick="ulSelectType('PDF',this)">
-                                <span class="ul-type-icon">📄</span>
-                                <span class="ul-type-label">PDF</span>
-                            </div>
-                            <div class="ul-type-card" data-type="PPT" onclick="ulSelectType('PPT',this)">
-                                <span class="ul-type-icon">📊</span>
-                                <span class="ul-type-label">PPT</span>
-                            </div>
-                            <div class="ul-type-card" data-type="DOC" onclick="ulSelectType('DOC',this)">
-                                <span class="ul-type-icon">📝</span>
-                                <span class="ul-type-label">DOC</span>
-                            </div>
-                            <div class="ul-type-card" data-type="IMG" onclick="ulSelectType('IMG',this)">
-                                <span class="ul-type-icon">🖼️</span>
-                                <span class="ul-type-label">IMG</span>
-                            </div>
-                        </div>
-                        <input type="hidden" id="ul-filetype" value="">
-                    </div>
-                </div>
-
-                <!-- Description -->
-                <div class="ul-fg" style="margin-top:14px">
-                    <label class="ul-label">Description <span class="ul-opt">optional</span></label>
-                    <textarea class="ul-textarea" id="ul-desc" placeholder="Brief description, topics covered, unit number…"></textarea>
-                </div>
-
-                <!-- Source toggle -->
-                <div class="ul-fg">
-                    <label class="ul-label">Material Source <span class="ul-req">*</span></label>
-                    <div class="ul-src-toggle">
-                        <button class="ul-src-btn active" id="ul-src-file-btn" onclick="ulSetSource('file')">📁 Upload File</button>
-                        <button class="ul-src-btn" id="ul-src-url-btn" onclick="ulSetSource('url')">🔗 Reference URL</button>
-                    </div>
-
-                    <!-- File -->
-                    <div id="ul-source-file">
-                        <div class="ul-drop-zone" id="ul-drop-zone">
-                            <input type="file" id="ul-file" accept=".pdf,.ppt,.pptx,.doc,.docx,.png,.jpg,.jpeg,.gif" onchange="ulOnFileSelect(this)">
-                            <span class="ul-drop-icon">☁️</span>
-                            <div class="ul-drop-title">Drag & drop or click to browse</div>
-                            <div class="ul-drop-sub">Max 50 MB</div>
-                            <div class="ul-drop-fmts">
-                                <span class="ul-fmt pdf">PDF</span>
-                                <span class="ul-fmt ppt">PPT/PPTX</span>
-                                <span class="ul-fmt doc">DOC/DOCX</span>
-                                <span class="ul-fmt img">PNG/JPG</span>
-                            </div>
-                        </div>
-                        <div class="ul-file-preview" id="ul-file-preview">
-                            <span class="ul-fp-icon" id="ul-fp-icon">📄</span>
-                            <div>
-                                <div class="ul-fp-name" id="ul-fp-name"></div>
-                                <div class="ul-fp-size" id="ul-fp-size"></div>
-                            </div>
-                            <button class="ul-fp-remove" onclick="ulRemoveFile()">✕</button>
-                        </div>
-                    </div>
-
-                    <!-- URL -->
-                    <div id="ul-source-url" style="display:none">
-                        <input class="ul-input" id="ul-refurl" type="url" placeholder="https://drive.google.com/… or any public link">
-                        <div class="ul-hint">📌 Paste a Google Drive, OneDrive, or any public reference link.</div>
-                    </div>
-                </div>
-
-                <!-- Tags -->
-                <div class="ul-fg">
-                    <label class="ul-label">Tags <span class="ul-opt">optional</span></label>
-                    <input class="ul-input" id="ul-tags" type="text" placeholder="unit 3, trees, exam prep…">
-                    <div class="ul-hint">Separate with commas. Helps students search faster.</div>
-                </div>
-
-                <!-- Visibility -->
-                <div class="ul-fg" style="margin-bottom:0">
-                    <label class="ul-label">Visibility</label>
-                    <div class="ul-vis-row">
-                        <label><input type="radio" name="ul-vis" value="all" checked> All Students</label>
-                        <label><input type="radio" name="ul-vis" value="sem"> Semester Only</label>
-                        <label><input type="radio" name="ul-vis" value="subject"> Subject Only</label>
-                    </div>
-                </div>
-            </div><!-- /step 1 -->
-
-            <!-- ── STEP 2: Review ── -->
-            <div class="ul-form-step" id="ul-form-2">
-                <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Please review your material details before uploading.</p>
-                <div class="ul-review-card" id="ul-review-card">
-                    <h4>📋 Material Summary</h4>
-                </div>
-                <div class="ul-review-info-box">
-                    ℹ️ Once uploaded, the material will be <strong style="color:var(--text)">immediately visible</strong> to students based on your visibility setting. You can edit or remove it from the repository at any time.
-                </div>
-            </div><!-- /step 2 -->
-
-            <!-- ── STEP 3: Uploading ── -->
-            <div class="ul-form-step" id="ul-form-3">
-                <div class="ul-progress-wrap">
-                    <span class="ul-prog-icon" id="ul-prog-icon">☁️</span>
-                    <div class="ul-prog-title" id="ul-prog-title">Uploading your material…</div>
-                    <div class="ul-prog-sub" id="ul-prog-sub">Please wait while we upload your file securely.</div>
-                    <div class="ul-prog-bar" id="ul-prog-bar">
-                        <div class="ul-prog-fill" id="ul-prog-fill"></div>
-                    </div>
-                    <div class="ul-prog-pct" id="ul-prog-pct">0%</div>
-                </div>
-            </div><!-- /step 3 -->
-
-        </div><!-- /modal-body -->
-
-        <!-- Footer -->
-        <div class="ul-modal-footer">
-            <div class="ul-footer-left">
-                <button class="ul-btn ul-btn-ghost" id="ul-btn-cancel" onclick="closeUploadModal()">✕ Cancel</button>
-                <button class="ul-btn ul-btn-secondary" id="ul-btn-back" style="display:none" onclick="ulGoBack()">← Back</button>
-            </div>
-            <div class="ul-footer-right">
-                <button class="ul-btn ul-btn-primary" id="ul-btn-next" onclick="ulGoNext()">Next: Review →</button>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<!-- TOAST CONTAINER -->
-<div class="toast-container" id="toastContainer"></div>
-
-<script>
-// ─────────────────────────────────────────────
-// API BASE
-// ─────────────────────────────────────────────
-const API = 'http://127.0.0.1:8000';
-
-const ENDPOINTS = {
-    facultyDashboard : `${API}/resource/api/faculty/dashboard/`,
-    review           : `${API}/resource/api/review/`,
-    resources        : `${API}/resource/api/resources/`,
-    subjects         : `${API}/resource/api/subjects/`,
-};
-
-function getToken() { return localStorage.getItem('access_token'); }
-
-function authHeaders(isJson = true) {
-    const h = { 'Authorization': `Bearer ${getToken()}` };
-    if (isJson) h['Content-Type'] = 'application/json';
-    return h;
-}
-
-// ─────────────────────────────────────────────
-// FILE TYPE HELPERS
-// ─────────────────────────────────────────────
-const FT_ICONS = { PDF: '📄', PPT: '📊', DOC: '📝', IMG: '🖼️' };
-const FT_BG    = {
-    PDF: 'rgba(255,101,132,0.12)',
-    PPT: 'rgba(247,183,49,0.12)',
-    DOC: 'rgba(108,99,255,0.12)',
-    IMG: 'rgba(67,233,123,0.12)'
-};
-
-// ─────────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────────
-function init() {
-    const username = localStorage.getItem('username') || 'Prof. Sharma';
-    const initials = username.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-
-    document.getElementById('avatarInitials').textContent = initials;
-    document.getElementById('sidebarName').textContent    = username;
-    document.getElementById('greetName').textContent      = username;
-
-    const hour = new Date().getHours();
-    document.getElementById('greetTime').textContent =
-        hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
-
-    const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    document.getElementById('greetDate').textContent =
-        new Date().toLocaleDateString('en-US', opts) + ' · BCA Semester 4';
-
-    loadDashboard();
-    loadReviewQueue();
-}
-
-// ─────────────────────────────────────────────
-// DASHBOARD
-// ─────────────────────────────────────────────
-async function loadDashboard() {
-    try {
-        const res = await fetch(ENDPOINTS.facultyDashboard, { headers: authHeaders() });
-        if (res.status === 401) { signOut(); return; }
-        if (!res.ok) throw new Error('Dashboard fetch failed: ' + res.status);
-        const data = await res.json();
-        renderStats(data);
-        renderUploads(data.recent_uploads || []);
-    } catch (err) {
-        console.error(err);
-        showToast('Failed to load dashboard data', 'error');
-        renderStats({});
-        renderUploads([]);
-    }
-}
-
-function renderStats(data) {
-    animateCount('statResources', data.total_resources   || 0);
-    animateCount('statPending',   data.pending_approvals || 0);
-    animateCount('statViews',     data.views_today       || 0);
-    animateCount('statStudents',  data.active_students   || 0);
-
-    const pending = data.pending_approvals || 0;
-    const pendingEl = document.getElementById('statPendingSub');
-    if (pending > 0) {
-        pendingEl.textContent = '⚠ ' + pending + ' need' + (pending === 1 ? 's' : '') + ' review';
-        pendingEl.className   = 'stat-change warn';
-    } else {
-        pendingEl.textContent = '✓ All clear';
-        pendingEl.className   = 'stat-change up';
-    }
-
-    const views = data.views_today || 0;
-    document.getElementById('statViewsSub').textContent = views > 0
-        ? '↑ ' + views + ' total today' : 'No views recorded today';
-
-    const total = data.total_resources || 0;
-    document.getElementById('statResourcesSub').textContent = total > 0
-        ? '↑ ' + total + ' resources uploaded' : 'No uploads yet';
-
-    document.getElementById('statStudentsSub').textContent =
-        (data.active_students || 0) + ' students enrolled';
-
-    document.getElementById('reviewBadgeNav').textContent   = pending;
-    document.getElementById('reviewCountBadge').textContent = pending + ' pending';
-}
-
-function animateCount(id, target) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const duration = 800;
-    const start = performance.now();
-    function tick(now) {
-        const p    = Math.min((now - start) / duration, 1);
-        const ease = 1 - Math.pow(1 - p, 3);
-        el.textContent = Math.round(ease * target).toLocaleString();
-        if (p < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-}
-
-// ─────────────────────────────────────────────
-// RECENT UPLOADS TABLE
-// ─────────────────────────────────────────────
-function renderUploads(uploads) {
-    const container = document.getElementById('uploadsTableBody');
-
-    if (!uploads.length) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">📭</div>
-                <p>No uploads yet. Start by uploading material!</p>
-            </div>`;
-        return;
-    }
-
-    const rows = uploads.map(item => {
-        const subCode  = item.subject || '—';
-        const fileType = (item.file_type || 'DOC').toUpperCase();
-        const icon = FT_ICONS[fileType] || '📁';
-        const bg   = FT_BG[fileType]   || 'rgba(108,99,255,0.12)';
-
-        const statusClass = item.status === 'APPROVED' ? 'approved'
-                          : item.status === 'REJECTED' ? 'rejected' : 'pending';
-        const statusLabel = item.status === 'APPROVED' ? 'Live'
-                          : item.status === 'REJECTED' ? 'Rejected' : 'Processing';
-
-        const date = item.created_at
-            ? new Date(item.created_at).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
-            : '—';
-
-        const views    = item.views ?? item.view_count ?? 0;
-        const filePath = item.file          || '';
-        const refUrl   = item.reference_url || '';
-
-        return `
-        <tr>
-            <td>
-                <div class="file-cell">
-                    <div class="file-icon" style="background:${bg}">${icon}</div>
-                    <div>
-                        <div class="file-name">${escHtml(item.title || 'Untitled')}</div>
-                        <div class="file-date">${date}</div>
-                    </div>
-                </div>
-            </td>
-            <td><span class="subject-tag">${escHtml(subCode)}</span></td>
-            <td><span class="status-pill ${statusClass}">${statusLabel}</span></td>
-            <td>
-                <div style="display:flex;align-items:center;gap:0.5rem">
-                    <span style="font-size:0.75rem;color:var(--text-muted)">👁 ${views}</span>
-                    <button class="view-link" onclick="viewResource(${item.id}, '${escAttr(filePath)}', '${escAttr(refUrl)}')">View</button>
-                </div>
-            </td>
-        </tr>`;
-    }).join('');
-
-    container.innerHTML = `
-        <table class="uploads-table">
-            <thead>
-                <tr>
-                    <th>File Name</th>
-                    <th>Subject</th>
-                    <th>Status</th>
-                    <th>Views / View</th>
-                </tr>
-            </thead>
-            <tbody>${rows}</tbody>
-        </table>`;
-}
-
-async function viewResource(id, filePath, refUrl) {
-    if (filePath && filePath !== 'null' && filePath !== '') {
-        const url = filePath.startsWith('http') ? filePath : API + '/media/' + filePath;
-        window.open(url, '_blank'); return;
-    }
-    if (refUrl && refUrl !== 'null' && refUrl !== '') {
-        window.open(refUrl, '_blank'); return;
-    }
-    try {
-        showToast('Opening file...', 'info');
-        const res = await fetch(ENDPOINTS.resources + id + '/', { headers: authHeaders() });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const item = await res.json();
-        const fUrl = item.file || '';
-        const rUrl = item.reference_url || '';
-        if (fUrl && fUrl !== 'null' && fUrl !== '') {
-            window.open(fUrl.startsWith('http') ? fUrl : API + '/media/' + fUrl, '_blank');
-        } else if (rUrl && rUrl !== 'null' && rUrl !== '') {
-            window.open(rUrl, '_blank');
-        } else {
-            showToast('No file attached to this resource', 'info');
+        if (!token || (user.role !== 'faculty' && user.role !== 'admin')) {
+            window.location.href = 'login.html';
         }
-    } catch (e) {
-        showToast('Could not open file: ' + e.message, 'error');
-    }
-}
 
-// ─────────────────────────────────────────────
-// REVIEW QUEUE
-// ─────────────────────────────────────────────
-async function loadReviewQueue() {
-    try {
-        const res   = await fetch(ENDPOINTS.review, { headers: authHeaders() });
-        if (!res.ok) throw new Error('Review fetch: ' + res.status);
-        const data  = await res.json();
-        const items = Array.isArray(data) ? data : (data.results || []);
-        renderReviewQueue(items);
-    } catch (err) {
-        console.error(err);
-        document.getElementById('reviewList').innerHTML =
-            '<div class="empty-state"><div class="empty-icon">📭</div><p>No items in review queue</p></div>';
-        document.getElementById('reviewBadgeNav').textContent   = '0';
-        document.getElementById('reviewCountBadge').textContent = '0 pending';
-    }
-}
+        // Setup User Info
+        document.getElementById('userName').textContent = user.username;
+        document.getElementById('userAvatar').textContent = user.username.charAt(0).toUpperCase();
+        document.getElementById('greeting').textContent = `Welcome back, ${user.username}`;
 
-function renderReviewQueue(items) {
-    const container = document.getElementById('reviewList');
-    document.getElementById('reviewBadgeNav').textContent   = items.length;
-    document.getElementById('reviewCountBadge').textContent = items.length + ' pending';
-
-    if (!items.length) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">✅</div>
-                <p>All caught up! No pending reviews.</p>
-            </div>`;
-        return;
-    }
-
-    const html = items.map(item => {
-        const ft       = (item.file_type || '').toUpperCase();
-        const icon     = FT_ICONS[ft] || '📁';
-        const bg       = FT_BG[ft]   || 'rgba(108,99,255,0.12)';
-        const uploader = typeof item.uploaded_by === 'string'
-            ? item.uploaded_by : (item.uploaded_by?.username || 'Unknown');
-        const subCode  = item.subject?.sub_code || '—';
-        const semNum   = item.subject?.sem?.sem_nmbr ? item.subject.sem.sem_nmbr + ' Sem' : '';
-        const views    = item.view_count || 0;
-        const date     = item.created_at
-            ? new Date(item.created_at).toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) : '';
-        const fileUrl  = item.file || item.reference_url || '';
-
-        return `
-        <div class="review-item" id="reviewItem${item.id}">
-            <div class="review-thumb" style="background:${bg}">${icon}</div>
-            <div class="review-info">
-                <div class="review-filename">${escHtml(item.title || 'Untitled')}</div>
-                <div class="review-meta">
-                    by ${escHtml(uploader)} &middot; ${escHtml(subCode)} ${escHtml(semNum)} &middot; ${date} &middot; 👁 ${views}
-                </div>
-                <div class="review-actions">
-                    <button class="btn-approve" onclick="approveItem(${item.id}, this)">✓ Approve</button>
-                    <button class="btn-reject"  onclick="rejectItem(${item.id}, this)">✕ Reject</button>
-                    <button class="btn-view-file" onclick="openFile('${escAttr(fileUrl)}')">👁 View</button>
-                </div>
-            </div>
-            <span class="review-badge">Pending</span>
-        </div>`;
-    }).join('');
-
-    container.innerHTML = html;
-}
-
-function openFile(fileUrl) {
-    if (!fileUrl || fileUrl === 'null' || fileUrl === '') {
-        showToast('No file attached to this resource', 'info'); return;
-    }
-    window.open(fileUrl.startsWith('http') ? fileUrl : API + '/media/' + fileUrl, '_blank');
-}
-
-async function approveItem(id, btn) {
-    btn.disabled = true; btn.textContent = '...';
-    try {
-        const res = await fetch(`${ENDPOINTS.review}${id}/approve/`, { method: 'POST', headers: authHeaders() });
-        if (res.ok) {
-            document.getElementById(`reviewItem${id}`)?.remove();
-            showToast('Resource approved!', 'success');
-            loadDashboard();
-            const rem = document.querySelectorAll('[id^="reviewItem"]').length;
-            document.getElementById('reviewBadgeNav').textContent   = rem;
-            document.getElementById('reviewCountBadge').textContent = rem + ' pending';
-        } else {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(err.detail || err.error || 'Approve failed');
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
         }
-    } catch (e) {
-        showToast(e.message || 'Failed to approve', 'error');
-        btn.disabled = false; btn.textContent = '✓ Approve';
-    }
-}
 
-async function rejectItem(id, btn) {
-    btn.disabled = true; btn.textContent = '...';
-    try {
-        const res = await fetch(`${ENDPOINTS.review}${id}/reject/`, { method: 'POST', headers: authHeaders() });
-        if (res.ok) {
-            document.getElementById(`reviewItem${id}`)?.remove();
-            showToast('Resource rejected.', 'info');
-            loadDashboard();
-            const rem = document.querySelectorAll('[id^="reviewItem"]').length;
-            document.getElementById('reviewBadgeNav').textContent   = rem;
-            document.getElementById('reviewCountBadge').textContent = rem + ' pending';
-        } else {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(err.detail || err.error || 'Reject failed');
+        function openModal() { document.getElementById('uploadModal').style.display = 'flex'; loadSubjects(); }
+        function closeModal() { document.getElementById('uploadModal').style.display = 'none'; document.getElementById('uploadForm').reset(); }
+
+        async function fetchDashboardData() {
+            try {
+                const res = await fetch(`${API_BASE}/resource/api/faculty/dashboard/`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.status === 401) return logout();
+                const data = await res.json();
+                
+                document.getElementById('statTotal').textContent = data.total_resources;
+                document.getElementById('statViews').textContent = data.views_today;
+                document.getElementById('statPending').textContent = data.pending_approvals;
+                document.getElementById('statStudents').textContent = data.active_students;
+
+                renderRecentUploads(data.recent_uploads);
+            } catch(e) { console.error('Error fetching dashboard', e); }
         }
-    } catch (e) {
-        showToast(e.message || 'Failed to reject', 'error');
-        btn.disabled = false; btn.textContent = '✕ Reject';
-    }
-}
 
-// ══════════════════════════════════════════════
-// ENHANCED UPLOAD MODAL — STATE & LOGIC
-// ══════════════════════════════════════════════
-let ulStep        = 1;
-let ulAllSubjects = [];
-let ulSelType     = '';
-let ulSelFile     = null;
-let ulSource      = 'file';
-let ulSemFilter   = '';
+        function renderRecentUploads(uploads) {
+            const container = document.getElementById('recentUploadsContainer');
+            if (uploads.length === 0) {
+                container.innerHTML = '<p style="color:rgba(255,255,255,0.5); text-align:center; padding:20px;">No uploads yet.</p>';
+                return;
+            }
 
-// Fallback subjects from Image 2 (used if API call fails)
-const UL_FALLBACK_SUBJECTS = [
-    {id:1,  sub_code:'BCA101', name:'Fundamentals of Computers', sem:{sem_nmbr:1}},
-    {id:2,  sub_code:'BCA102', name:'Mathematics I',              sem:{sem_nmbr:1}},
-    {id:3,  sub_code:'BCA201', name:'Digital Electronics',        sem:{sem_nmbr:2}},
-    {id:4,  sub_code:'BCA202', name:'C Programming',              sem:{sem_nmbr:2}},
-    {id:5,  sub_code:'BCA301', name:'Data Communication',         sem:{sem_nmbr:3}},
-    {id:6,  sub_code:'BCA302', name:'Web Technologies',           sem:{sem_nmbr:3}},
-    {id:7,  sub_code:'BCA303', name:'Software Engineering',       sem:{sem_nmbr:3}},
-    {id:8,  sub_code:'BCA304', name:'Python Programming',         sem:{sem_nmbr:3}},
-    {id:9,  sub_code:'BCA401', name:'Data Structures',            sem:{sem_nmbr:4}},
-    {id:10, sub_code:'BCA402', name:'Operating Systems',          sem:{sem_nmbr:4}},
-    {id:11, sub_code:'BCA403', name:'DBMS',                       sem:{sem_nmbr:4}},
-    {id:12, sub_code:'BCA404', name:'Java Programming',           sem:{sem_nmbr:4}},
-    {id:13, sub_code:'BCA501', name:'Computer Graphics',          sem:{sem_nmbr:5}},
-    {id:14, sub_code:'BCA502', name:'Artificial Intelligence',    sem:{sem_nmbr:5}},
-    {id:15, sub_code:'BCA503', name:'Mobile App Development',     sem:{sem_nmbr:5}},
-    {id:16, sub_code:'BCA504', name:'Cloud Computing',            sem:{sem_nmbr:5}},
-    {id:17, sub_code:'BCA601', name:'Machine Learning',           sem:{sem_nmbr:6}},
-    {id:18, sub_code:'BCA602', name:'Cyber Security',             sem:{sem_nmbr:6}},
-    {id:19, sub_code:'BCA603', name:'Big Data Analytics',         sem:{sem_nmbr:6}},
-    {id:20, sub_code:'BCA604', name:'Project And Seminar',        sem:{sem_nmbr:6}},
-];
+            container.innerHTML = uploads.map(u => `
+                <div class="list-item">
+                    <div class="item-icon"><i class="fas fa-file-pdf"></i></div>
+                    <div class="item-info">
+                        <h4>${u.title}</h4>
+                        <p>${u.subject} • ${new Date(u.created_at).toLocaleDateString()}</p>
+                    </div>
+                    <div class="status-badge status-${u.status.toLowerCase()}">${u.status}</div>
+                </div>
+            `).join('');
+        }
 
-async function openUploadModal() {
-    document.getElementById('uploadModal').classList.add('open');
-    document.body.style.overflow = 'hidden';
-    ulResetForm();
-    await ulLoadSubjects();
-}
+        async function loadSubjects() {
+            const select = document.getElementById('resSubject');
+            if (select.options.length > 1) return; // already loaded
+            try {
+                const res = await fetch(`${API_BASE}/academic/api/subjects/`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                
+                // Show all subjects for now, or filter by logged in faculty
+                const options = data.map(sub => `<option value="${sub.id}">${sub.sub_code} - ${sub.sub_name}</option>`);
+                select.innerHTML = options.length ? options.join('') : '<option disabled>No subjects available</option>';
+            } catch(e) { console.error(e); }
+        }
 
-function closeUploadModal() {
-    document.getElementById('uploadModal').classList.remove('open');
-    document.body.style.overflow = '';
-}
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitUploadBtn');
+            btn.disabled = true; btn.textContent = 'Uploading...';
 
-function ulResetForm() {
-    ulStep = 1; ulSelType = ''; ulSelFile = null; ulSource = 'file'; ulSemFilter = '';
-    document.getElementById('ul-title').value = '';
-    document.getElementById('ul-desc').value  = '';
-    document.getElementById('ul-tags').value  = '';
-    document.getElementById('ul-refurl').value = '';
-    document.getElementById('ul-filetype').value = '';
-    document.getElementById('ul-title-count').textContent = '0 / 120';
-    document.querySelectorAll('.ul-type-card').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.ul-sem-chip').forEach(c => c.classList.toggle('active', c.dataset.sem === ''));
-    document.getElementById('ul-file-preview').classList.remove('show');
-    document.getElementById('ul-drop-zone').style.display = 'block';
-    ulHideAlert();
-    ulSetSource('file');
-    ulUpdateStepUI();
-}
+            const formData = new FormData();
+            formData.append('title', document.getElementById('resTitle').value);
+            formData.append('description', document.getElementById('resDesc').value);
+            formData.append('subject', document.getElementById('resSubject').value);
+            formData.append('file_type', document.getElementById('resType').value);
+            formData.append('file', document.getElementById('resFile').files[0]);
 
-// ── Load Subjects ──
-async function ulLoadSubjects() {
-    const sel    = document.getElementById('ul-subject');
-    const spin   = document.getElementById('ul-subj-spin');
-    const countEl = document.getElementById('ul-subj-count');
-
-    sel.innerHTML = '<option value="">Loading subjects…</option>';
-    spin.style.display = 'block';
-    countEl.style.display = 'none';
-
-    try {
-        // Try dedicated subjects endpoint first
-        let res = await fetch(ENDPOINTS.subjects, { headers: authHeaders() });
-        if (!res.ok) {
-            // Fall back to resources endpoint — extract unique subjects
-            res = await fetch(ENDPOINTS.resources, { headers: authHeaders() });
-            if (!res.ok) throw new Error('Could not load subjects');
-            const data  = await res.json();
-            const items = Array.isArray(data) ? data : (data.results || []);
-            const seen  = {};
-            ulAllSubjects = [];
-            items.forEach(item => {
-                if (item.subject && item.subject.id && !seen[item.subject.id]) {
-                    seen[item.subject.id] = true;
-                    ulAllSubjects.push(item.subject);
+            try {
+                const res = await fetch(`${API_BASE}/resource/api/resources/`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+                
+                if (res.ok) {
+                    closeModal();
+                    fetchDashboardData();
+                    alert("Resource uploaded successfully!");
+                } else {
+                    alert("Failed to upload.");
                 }
-            });
-        } else {
-            const data    = await res.json();
-            ulAllSubjects = Array.isArray(data) ? data : (data.results || []);
-        }
-        if (!ulAllSubjects.length) throw new Error('empty');
-    } catch (e) {
-        ulAllSubjects = UL_FALLBACK_SUBJECTS;
-        ulShowAlert('Using offline subject list. Connect backend for live data.', 'info');
-    }
-
-    spin.style.display = 'none';
-    ulPopulateSubjects(ulSemFilter);
-}
-
-function ulPopulateSubjects(semVal) {
-    const sel     = document.getElementById('ul-subject');
-    const countEl = document.getElementById('ul-subj-count');
-    const current = sel.value;
-
-    const filtered = semVal
-        ? ulAllSubjects.filter(s => String(s.sem?.sem_nmbr || s.semester || '') === String(semVal))
-        : ulAllSubjects;
-
-    sel.innerHTML = `<option value="">— Select Subject (${filtered.length}) —</option>`;
-
-    // Group by semester
-    const bySem = {};
-    filtered.forEach(s => {
-        const sem = s.sem?.sem_nmbr || s.semester || '?';
-        if (!bySem[sem]) bySem[sem] = [];
-        bySem[sem].push(s);
-    });
-
-    Object.keys(bySem).sort((a,b) => Number(a)-Number(b)).forEach(sem => {
-        const grp = document.createElement('optgroup');
-        grp.label = `── Semester ${sem}`;
-        bySem[sem].forEach(s => {
-            const opt = document.createElement('option');
-            opt.value = s.id;
-            opt.textContent = `${s.sub_code} — ${s.name}`;
-            opt.dataset.code = s.sub_code;
-            opt.dataset.name = s.name;
-            opt.dataset.sem  = s.sem?.sem_nmbr || s.semester || '';
-            grp.appendChild(opt);
-        });
-        sel.appendChild(grp);
-    });
-
-    if ([...sel.options].some(o => o.value === current)) sel.value = current;
-    countEl.textContent    = filtered.length + ' subjects';
-    countEl.style.display  = filtered.length ? 'block' : 'none';
-}
-
-function ulFilterSem(btn) {
-    document.querySelectorAll('.ul-sem-chip').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    ulSemFilter = btn.dataset.sem;
-    ulPopulateSubjects(ulSemFilter);
-}
-
-function ulOnSubjectChange() {
-    const sel  = document.getElementById('ul-subject');
-    const info = document.getElementById('ul-subj-info');
-    const opt  = sel.options[sel.selectedIndex];
-    if (opt && opt.value && opt.dataset.code) {
-        info.innerHTML = `<strong>${opt.dataset.code}</strong> · Semester ${opt.dataset.sem} · ${opt.dataset.name}`;
-        info.classList.add('show');
-    } else {
-        info.classList.remove('show');
-    }
-}
-
-// ── File Type Selection ──
-function ulSelectType(type, el) {
-    document.querySelectorAll('.ul-type-card').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-    ulSelType = type;
-    document.getElementById('ul-filetype').value = type;
-}
-
-// ── Source Toggle ──
-function ulSetSource(src) {
-    ulSource = src;
-    document.getElementById('ul-src-file-btn').classList.toggle('active', src === 'file');
-    document.getElementById('ul-src-url-btn').classList.toggle('active', src === 'url');
-    document.getElementById('ul-source-file').style.display = src === 'file' ? 'block' : 'none';
-    document.getElementById('ul-source-url').style.display  = src === 'url'  ? 'block' : 'none';
-}
-
-// ── File Handling ──
-function ulOnFileSelect(input) {
-    const file = input.files[0];
-    if (!file) return;
-    ulSelFile = file;
-
-    const ext     = file.name.split('.').pop().toLowerCase();
-    const iconMap = { pdf:'📄', ppt:'📊', pptx:'📊', doc:'📝', docx:'📝', png:'🖼️', jpg:'🖼️', jpeg:'🖼️', gif:'🖼️' };
-    document.getElementById('ul-fp-icon').textContent = iconMap[ext] || '📎';
-    document.getElementById('ul-fp-name').textContent = file.name;
-    document.getElementById('ul-fp-size').textContent = ulFmtSize(file.size);
-    document.getElementById('ul-file-preview').classList.add('show');
-    document.getElementById('ul-drop-zone').style.display = 'none';
-
-    // Auto-select type card
-    const typeMap = { pdf:'PDF', ppt:'PPT', pptx:'PPT', doc:'DOC', docx:'DOC', png:'IMG', jpg:'IMG', jpeg:'IMG', gif:'IMG' };
-    if (typeMap[ext] && !ulSelType) {
-        const card = document.querySelector(`.ul-type-card[data-type="${typeMap[ext]}"]`);
-        if (card) ulSelectType(typeMap[ext], card);
-    }
-}
-
-function ulRemoveFile() {
-    ulSelFile = null;
-    document.getElementById('ul-file').value = '';
-    document.getElementById('ul-file-preview').classList.remove('show');
-    document.getElementById('ul-drop-zone').style.display = 'block';
-}
-
-function ulFmtSize(bytes) {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes/1024).toFixed(1) + ' KB';
-    return (bytes/(1024*1024)).toFixed(1) + ' MB';
-}
-
-// Drag and drop
-(function() {
-    const dz = document.getElementById('ul-drop-zone');
-    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
-    dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
-    dz.addEventListener('drop', e => {
-        e.preventDefault(); dz.classList.remove('drag-over');
-        const file = e.dataTransfer.files[0];
-        if (file) { document.getElementById('ul-file').files = e.dataTransfer.files; ulOnFileSelect(document.getElementById('ul-file')); }
-    });
-})();
-
-// Title char count
-document.getElementById('ul-title').addEventListener('input', function() {
-    document.getElementById('ul-title-count').textContent = this.value.length + ' / 120';
-});
-
-// ── Step Navigation ──
-function ulValidateStep1() {
-    const title   = document.getElementById('ul-title').value.trim();
-    const subject = document.getElementById('ul-subject').value;
-    const url     = document.getElementById('ul-refurl').value.trim();
-
-    if (!title)   { ulShowAlert('Please enter a title.', 'error'); return false; }
-    if (!subject) { ulShowAlert('Please select a subject.', 'error'); return false; }
-    if (!ulSelType) { ulShowAlert('Please select a file type (PDF, PPT, DOC, or IMG).', 'error'); return false; }
-    if (ulSource === 'file' && !ulSelFile) { ulShowAlert('Please choose a file to upload.', 'error'); return false; }
-    if (ulSource === 'url'  && !url)       { ulShowAlert('Please enter a reference URL.', 'error'); return false; }
-    return true;
-}
-
-function ulGoNext() {
-    ulHideAlert();
-    if (ulStep === 1) {
-        if (!ulValidateStep1()) return;
-        ulBuildReview();
-        ulStep = 2;
-    } else if (ulStep === 2) {
-        ulStep = 3;
-        ulUpdateStepUI();
-        ulDoUpload();
-        return;
-    }
-    ulUpdateStepUI();
-}
-
-function ulGoBack() {
-    if (ulStep > 1) { ulStep--; ulHideAlert(); ulUpdateStepUI(); }
-}
-
-function ulUpdateStepUI() {
-    for (let i = 1; i <= 3; i++) {
-        const s = document.getElementById(`ul-step-${i}`);
-        s.classList.remove('active', 'done');
-        if (i < ulStep)  s.classList.add('done');
-        if (i === ulStep) s.classList.add('active');
-    }
-    for (let i = 1; i <= 2; i++) {
-        document.getElementById(`ul-line-${i}`).classList.toggle('done', i < ulStep);
-    }
-    document.querySelectorAll('.ul-form-step').forEach((s, idx) => {
-        s.classList.toggle('active', idx + 1 === ulStep);
-    });
-
-    const btnBack   = document.getElementById('ul-btn-back');
-    const btnNext   = document.getElementById('ul-btn-next');
-    const btnCancel = document.getElementById('ul-btn-cancel');
-
-    btnBack.style.display   = ulStep > 1   ? 'inline-flex' : 'none';
-    btnCancel.style.display = ulStep < 3   ? 'inline-flex' : 'none';
-
-    if (ulStep === 1) {
-        btnNext.textContent = 'Next: Review →';
-        btnNext.className   = 'ul-btn ul-btn-primary';
-        btnNext.disabled    = false;
-        btnNext.style.display = 'inline-flex';
-    } else if (ulStep === 2) {
-        btnNext.textContent = '📤 Upload Now';
-        btnNext.className   = 'ul-btn ul-btn-success';
-        btnNext.disabled    = false;
-        btnNext.style.display = 'inline-flex';
-    } else {
-        btnNext.style.display = 'none';
-    }
-}
-
-// ── Review Card ──
-function ulBuildReview() {
-    const sel  = document.getElementById('ul-subject');
-    const opt  = sel.options[sel.selectedIndex];
-    const subj = opt ? opt.textContent : '—';
-    const title = document.getElementById('ul-title').value.trim();
-    const desc  = document.getElementById('ul-desc').value.trim();
-    const tags  = document.getElementById('ul-tags').value.trim();
-    const url   = document.getElementById('ul-refurl').value.trim();
-    const vis   = document.querySelector('input[name="ul-vis"]:checked')?.value || 'all';
-    const visLbl = { all:'All Students', sem:'Semester Only', subject:'Subject Only' };
-
-    document.getElementById('ul-review-card').innerHTML = `
-        <h4>📋 Material Summary</h4>
-        <div class="ul-pr-row"><span class="ul-pr-label">Title</span><span class="ul-pr-value">${escHtml(title)}</span></div>
-        <div class="ul-pr-row"><span class="ul-pr-label">Subject</span><span class="ul-pr-value">${escHtml(subj)}</span></div>
-        <div class="ul-pr-row"><span class="ul-pr-label">File Type</span><span class="ul-pr-value"><span class="ul-pr-badge ${ulSelType}">${ulSelType}</span></span></div>
-        <div class="ul-pr-row"><span class="ul-pr-label">Source</span><span class="ul-pr-value">${ulSource === 'file' ? `📁 ${escHtml(ulSelFile?.name || '—')} <span style="color:var(--text-muted);font-size:11px;">(${ulFmtSize(ulSelFile?.size||0)})</span>` : `🔗 ${escHtml(url)}`}</span></div>
-        ${desc ? `<div class="ul-pr-row"><span class="ul-pr-label">Description</span><span class="ul-pr-value">${escHtml(desc)}</span></div>` : ''}
-        ${tags ? `<div class="ul-pr-row"><span class="ul-pr-label">Tags</span><span class="ul-pr-value" style="color:#a78bfa">${escHtml(tags)}</span></div>` : ''}
-        <div class="ul-pr-row"><span class="ul-pr-label">Visibility</span><span class="ul-pr-value">${visLbl[vis]}</span></div>
-    `;
-}
-
-// ── Upload ──
-async function ulDoUpload() {
-    const fill = document.getElementById('ul-prog-fill');
-    const pct  = document.getElementById('ul-prog-pct');
-
-    let progress = 0;
-    const interval = setInterval(() => {
-        progress = Math.min(progress + Math.random() * 18, 90);
-        fill.style.width = progress + '%';
-        pct.textContent  = Math.round(progress) + '%';
-    }, 300);
-
-    try {
-        const subjectId = document.getElementById('ul-subject').value;
-        const formData  = new FormData();
-        formData.append('title',     document.getElementById('ul-title').value.trim());
-        formData.append('subject',   subjectId);
-        formData.append('file_type', ulSelType);
-
-        const desc   = document.getElementById('ul-desc').value.trim();
-        const refUrl = document.getElementById('ul-refurl').value.trim();
-        if (desc)   formData.append('description',   desc);
-        if (refUrl) formData.append('reference_url', refUrl);
-        if (ulSelFile) formData.append('file', ulSelFile);
-
-        const res = await fetch(ENDPOINTS.resources, {
-            method : 'POST',
-            headers: { 'Authorization': 'Bearer ' + getToken() },
-            body   : formData
+            } catch(e) {
+                console.error(e);
+                alert("Upload error.");
+            } finally {
+                btn.disabled = false; btn.innerHTML = 'Upload & Publish';
+            }
         });
 
-        clearInterval(interval);
-
-        if (res.ok || res.status === 201) {
-            fill.style.width = '100%';
-            pct.textContent  = '100%';
-            setTimeout(() => ulShowSuccess(), 400);
-        } else {
-            const err = await res.json().catch(() => ({}));
-            const msg = err.detail || err.title?.[0] || err.subject?.[0]
-                     || err.file_type?.[0] || err.file?.[0] || 'Upload failed';
-            throw new Error(msg);
-        }
-    } catch (e) {
-        clearInterval(interval);
-        // Simulate success for demo / offline use
-        fill.style.width = '100%';
-        pct.textContent  = '100%';
-        setTimeout(() => ulShowSuccess(), 400);
-    }
-}
-
-function ulShowSuccess() {
-    document.getElementById('ul-prog-icon').textContent  = '✅';
-    document.getElementById('ul-prog-icon').style.animation = 'none';
-    document.getElementById('ul-prog-title').textContent = 'Upload Successful!';
-    document.getElementById('ul-prog-sub').textContent   = 'Your material is now live and visible to students.';
-    document.getElementById('ul-prog-bar').style.display = 'none';
-    document.getElementById('ul-prog-pct').style.display = 'none';
-
-    document.querySelector('.ul-footer-right').innerHTML =
-        `<button class="ul-btn ul-btn-success" onclick="closeUploadModal(); loadDashboard();">🎉 Done</button>`;
-    document.getElementById('ul-btn-cancel').style.display = 'none';
-    showToast('Material uploaded successfully! 🎉', 'success');
-}
-
-// ── Alert helpers ──
-function ulShowAlert(msg, type = 'error') {
-    const el  = document.getElementById('ul-alert');
-    const pfx = type === 'error' ? '⚠️ ' : type === 'success' ? '✅ ' : 'ℹ️ ';
-    el.textContent = pfx + msg;
-    el.className   = `ul-alert ${type} show`;
-}
-function ulHideAlert() {
-    document.getElementById('ul-alert').classList.remove('show');
-}
-
-// Close on overlay click
-document.getElementById('uploadModal').addEventListener('click', function(e) {
-    if (e.target === this) closeUploadModal();
-});
-
-// ─────────────────────────────────────────────
-// UTILITIES
-// ─────────────────────────────────────────────
-function showToast(message, type = 'info') {
-    const container = document.getElementById('toastContainer');
-    const icons = { success: '✓', error: '✕', info: 'ℹ' };
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.innerHTML = `<span>${icons[type]}</span> ${escHtml(message)}`;
-    container.appendChild(toast);
-    setTimeout(() => toast.remove(), 3500);
-}
-
-function setActive(el) {
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    el.classList.add('active');
-}
-
-function signOut() {
-    localStorage.clear();
-    window.location.href = 'login.html';
-}
-
-function escHtml(str) {
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-}
-
-function escAttr(str) {
-    return String(str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-}
-
-// ─────────────────────────────────────────────
-// START
-// ─────────────────────────────────────────────
-init();
-</script>
+        // Init
+        fetchDashboardData();
+    </script>
 </body>
 </html>

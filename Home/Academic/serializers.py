@@ -22,3 +22,9 @@ class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
         fields = ['id', 'sub_code', 'sub_name', 'sem', 'faculty']
+
+
+class SubjectCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = ['sub_code', 'sub_name', 'sem', 'faculty']

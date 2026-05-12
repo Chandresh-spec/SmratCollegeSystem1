@@ -1,77 +1,72 @@
-
-from django.shortcuts import render
-from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import RegisterSerializer,CustomObtainPair_Serializer
+from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny,IsAuthenticated
-from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.viewsets import ModelViewSet
-from Academic.models import Subject
-# Create your views here.
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate, get_user_model
 
-User=get_user_model()
+from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
+
+User = get_user_model()
+
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'message': 'Registration successful',
+                'user': UserSerializer(user).data,
+                'tokens': {
+                    'access': str(refresh.access_token),
+                    'refresh': str(refresh),
+                }
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        
-       
+
+        user = authenticate(
+            username=serializer.validated_data['username'],
+            password=serializer.validated_data['password']
+        )
+
+        if not user:
+            return Response(
+                {'error': 'Invalid username or password'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        refresh = RefreshToken.for_user(user)
         return Response({
-            "success": True,
-            "message":"User created sucessfuly",
-            "user": {
-                "id": user.id,
-                "username": user.username,
-                "role": user.role
+            'message': 'Login successful',
+            'user': UserSerializer(user).data,
+            'tokens': {
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
             }
-        }, status=status.HTTP_201_CREATED)
-      
-
-class Login_view(TokenObtainPairView):
-    serializer_class=CustomObtainPair_Serializer
-    permission_classes=[AllowAny]
-
-
-
-
-class UserProfileView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        user = request.user
-        return Response({
-            'id': user.id,
-            'username': user.username,
-            'email': user.email,
-            'role': user.role,
-            'usn': user.usn,
-            'sem': user.sem,
-            'mobile_number': user.mobile_number
         })
 
 
-class SubjectViewSet(ModelViewSet):
-    # ... existing
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        queryset = Subject.objects.all()
-        user = self.request.user
-        sem = self.request.query_params.get('sem')
+    def get(self, request):
+        return Response(UserSerializer(request.user).data)
 
-        if sem:
-            queryset = queryset.filter(sem__sem_nmbr=sem)
-
-        if user.role == 'admin':
-            return queryset
-
-        elif user.role == 'faculty':
-            return queryset.filter(faculty=user)
-
-        return queryset
-    
+    def patch(self, request):
+        serializer = UserSerializer(request.user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

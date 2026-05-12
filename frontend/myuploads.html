@@ -3,876 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduHub — My Uploads</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>My Uploads — EduHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --bg:      #0d0f14;
-            --bg2:     #13161d;
-            --bg3:     #1a1e28;
-            --border:  rgba(255,255,255,0.07);
-            --border-h:rgba(255,255,255,0.14);
-            --text:    #e8eaf0;
-            --muted:   #6b7280;
-            --dim:     #9ca3af;
-            --accent:  #6c63ff;
-            --red:     #ff6584;
-            --green:   #43e97b;
-            --gold:    #f7b731;
-            --blue:    #38bdf8;
-            --sidebar: 260px;
-            --r:       16px;
-        }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; overflow:hidden; }
+        body {
+            font-family:'Inter',sans-serif;
+            background: #0f0c29; color:#fff;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px; height: 100vh; position: fixed;
+            background: rgba(15,12,41,0.9); border-right: 1px solid rgba(255,255,255,0.05);
+            padding: 24px 0; display:flex; flex-direction:column;
+            backdrop-filter: blur(20px);
+        }
+        .logo {
+            font-size: 20px; font-weight: 700; padding: 0 24px 32px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nav-items { flex:1; }
+        .nav-item {
+            padding: 16px 24px; color: rgba(255,255,255,0.6);
+            display: flex; align-items:center; gap: 12px;
+            text-decoration:none; transition: all 0.3s;
+        }
+        .nav-item:hover, .nav-item.active {
+            color: #fff; background: rgba(102,126,234,0.1);
+            border-right: 3px solid #667eea;
+        }
+        .user-profile {
+            padding: 24px; border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex; align-items:center; gap:12px;
+        }
+        .avatar {
+            width:40px; height:40px; border-radius:50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display:flex; align-items:center; justify-content:center;
+            font-weight:600;
+        }
+        .user-info h4 { font-size:14px; }
+        .user-info p { font-size:12px; color:rgba(255,255,255,0.5); }
+        .logout-btn { color:#ff6b81; cursor:pointer; background:none; border:none; margin-left:auto; }
 
-        /* ── SIDEBAR ── */
-        .sidebar { width:var(--sidebar); background:var(--bg2); border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; top:0;left:0;bottom:0; z-index:100; }
-        .sidebar-logo { padding:1.75rem 1.5rem 1.25rem; border-bottom:1px solid var(--border); }
-        .logo-text { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800; background:linear-gradient(135deg,#6c63ff,#a855f7); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; letter-spacing:-0.03em; }
-        .logo-sub { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-top:0.15rem; }
-        .sidebar-profile { padding:1.25rem 1.5rem; display:flex; align-items:center; gap:0.875rem; border-bottom:1px solid var(--border); }
-        .avatar { width:42px;height:42px; background:linear-gradient(135deg,var(--accent),#a855f7); border-radius:12px; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:700; font-size:0.875rem; color:white; flex-shrink:0; }
-        .profile-info .name { font-weight:700; font-size:0.9rem; }
-        .role-badge { display:inline-block; padding:0.125rem 0.5rem; background:rgba(108,99,255,0.15); border:1px solid rgba(108,99,255,0.3); border-radius:100px; font-size:0.7rem; color:#a78bfa; font-weight:600; margin-top:0.2rem; }
-        .sidebar-nav { flex:1; padding:1.25rem 0.875rem; overflow-y:auto; }
-        .nav-section-label { font-size:0.65rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted); font-weight:700; padding:0.5rem 0.625rem; margin-bottom:0.25rem; }
-        .nav-item { display:flex; align-items:center; gap:0.75rem; padding:0.75rem 0.875rem; border-radius:12px; cursor:pointer; transition:all 0.2s; color:var(--dim); font-weight:600; font-size:0.9rem; margin-bottom:0.125rem; position:relative; text-decoration:none; }
-        .nav-item:hover { background:rgba(255,255,255,0.05); color:var(--text); }
-        .nav-item.active { background:rgba(108,99,255,0.15); color:#a78bfa; }
-        .nav-item.active::before { content:''; position:absolute; left:0;top:20%;bottom:20%; width:3px; background:var(--accent); border-radius:0 4px 4px 0; }
-        .nav-icon { width:20px;height:20px; opacity:0.8; flex-shrink:0; }
-        .nav-badge { margin-left:auto; background:var(--red); color:white; font-size:0.65rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:100px; min-width:20px; text-align:center; }
-        .sidebar-footer { padding:1rem 0.875rem; border-top:1px solid var(--border); }
-        .signout-btn { display:flex; align-items:center; gap:0.75rem; width:100%; padding:0.75rem 0.875rem; border-radius:12px; border:none; background:none; cursor:pointer; color:var(--muted); font-family:inherit; font-weight:600; font-size:0.9rem; transition:all 0.2s; }
-        .signout-btn:hover { background:rgba(255,101,132,0.1); color:var(--red); }
+        /* Main Content */
+        .main-content {
+            margin-left: 250px; padding: 32px 48px;
+        }
+        .header {
+            display:flex; justify-content:space-between; align-items:center; margin-bottom:40px;
+        }
+        .header h1 { font-size: 28px; font-weight: 700; }
 
-        /* ── MAIN ── */
-        .main { margin-left:var(--sidebar); flex:1; display:flex; flex-direction:column; height:100vh; overflow:hidden; }
+        /* Table */
+        .table-container {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px; overflow: hidden;
+        }
+        table { width:100%; border-collapse: collapse; }
+        th, td { padding: 16px 24px; text-align:left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        th { font-weight:500; color:rgba(255,255,255,0.5); font-size:13px; text-transform:uppercase; letter-spacing:1px; background: rgba(0,0,0,0.2); }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+        
+        .status-badge {
+            padding: 4px 10px; border-radius: 12px; font-size:12px; font-weight:600;
+            display: inline-block;
+        }
+        .status-approved { background: rgba(46,213,115,0.1); color: #2ed573; }
+        .status-pending { background: rgba(255,165,2,0.1); color: #ffa502; }
+        .status-rejected { background: rgba(255,71,87,0.1); color: #ff6b81; }
 
-        /* ── TOPBAR ── */
-        .topbar { background:var(--bg2); border-bottom:1px solid var(--border); padding:0 2rem; height:64px; display:flex; align-items:center; gap:1rem; flex-shrink:0; }
-        .breadcrumb { flex:1; display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; color:var(--muted); }
-        .breadcrumb a { color:var(--muted); text-decoration:none; transition:color 0.2s; }
-        .breadcrumb a:hover { color:var(--text); }
-        .breadcrumb .sep { color:rgba(255,255,255,0.15); }
-        .breadcrumb .current { color:var(--text); font-weight:700; }
-        .search-bar { display:flex; align-items:center; gap:0.5rem; background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:0.5rem 1rem; width:220px; transition:all 0.2s; }
-        .search-bar:focus-within { border-color:var(--accent); box-shadow:0 0 0 3px rgba(108,99,255,0.1); }
-        .search-bar input { background:none; border:none; outline:none; color:var(--text); font-family:inherit; font-size:0.85rem; width:100%; }
-        .search-bar input::placeholder { color:var(--muted); }
-        .notif-btn { width:40px;height:40px; border-radius:12px; background:var(--bg3); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; transition:all 0.2s; }
-        .notif-btn:hover { border-color:var(--accent); }
-        .notif-dot { position:absolute; top:8px;right:8px; width:7px;height:7px; background:var(--red); border-radius:50%; border:2px solid var(--bg2); }
-
-        /* ── CONTENT ── */
-        .content { flex:1; overflow-y:auto; padding:2rem; display:flex; flex-direction:column; gap:1.5rem; }
-        .content::-webkit-scrollbar { width:4px; }
-        .content::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
-
-        /* ── PAGE HEADER ── */
-        .page-header { display:flex; align-items:center; justify-content:space-between; }
-        .page-header h1 { font-family:'Syne',sans-serif; font-size:1.875rem; font-weight:800; display:flex; align-items:center; gap:0.625rem; }
-        .page-header h1 span { background:linear-gradient(135deg,#38bdf8,#6c63ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-style:italic; }
-
-        .upload-new-btn { display:flex; align-items:center; gap:0.5rem; padding:0.75rem 1.5rem; background:linear-gradient(135deg,var(--accent),#8b5cf6); color:white; border:none; border-radius:12px; font-family:inherit; font-weight:800; font-size:0.875rem; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
-        .upload-new-btn:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(108,99,255,0.3); }
-
-        /* ── STATS ── */
-        .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
-        .stat-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); padding:1.5rem; position:relative; overflow:hidden; transition:all 0.3s; cursor:default; }
-        .stat-card:hover { border-color:var(--border-h); transform:translateY(-2px); }
-        .stat-card::after { content:''; position:absolute; inset:0; opacity:0; transition:opacity 0.3s; pointer-events:none; }
-        .stat-card.yellow::after { background:radial-gradient(circle at top right,rgba(247,183,49,0.08),transparent 60%); }
-        .stat-card.green::after  { background:radial-gradient(circle at top right,rgba(67,233,123,0.08),transparent 60%); }
-        .stat-card.orange::after { background:radial-gradient(circle at top right,rgba(251,146,60,0.08),transparent 60%); }
-        .stat-card.purple::after { background:radial-gradient(circle at top right,rgba(108,99,255,0.08),transparent 60%); }
-        .stat-card:hover::after { opacity:1; }
-        .stat-icon { font-size:1.5rem; margin-bottom:1rem; display:block; }
-        .stat-value { font-family:'Syne',sans-serif; font-size:2.25rem; font-weight:800; line-height:1; margin-bottom:0.375rem; }
-        .stat-label { font-size:0.82rem; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; }
-        .stat-sub { font-size:0.78rem; font-weight:600; margin-top:0.625rem; }
-        .stat-sub.green  { color:var(--green); }
-        .stat-sub.orange { color:#fb923c; }
-        .stat-sub.red    { color:var(--red); }
-        .stat-sub.purple { color:#a78bfa; }
-
-        /* ── FILTER ROW ── */
-        .filter-row { display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; }
-        .chip { display:inline-flex; align-items:center; gap:0.375rem; padding:0.45rem 1rem; border-radius:100px; font-size:0.82rem; font-weight:700; cursor:pointer; border:1px solid var(--border); background:var(--bg2); color:var(--dim); transition:all 0.2s; white-space:nowrap; user-select:none; }
-        .chip:hover { border-color:var(--border-h); color:var(--text); }
-        .chip.active { background:var(--accent); border-color:var(--accent); color:white; }
-        .chip.f-pdf.active    { background:rgba(255,101,132,0.15); border-color:rgba(255,101,132,0.4); color:var(--red); }
-        .chip.f-ppt.active    { background:rgba(247,183,49,0.15);  border-color:rgba(247,183,49,0.4);  color:var(--gold); }
-        .chip.f-doc.active    { background:rgba(108,99,255,0.15);  border-color:rgba(108,99,255,0.4);  color:#a78bfa; }
-        .chip.f-live.active   { background:rgba(67,233,123,0.15);  border-color:rgba(67,233,123,0.4);  color:var(--green); }
-        .chip.f-pending.active{ background:rgba(251,146,60,0.15);  border-color:rgba(251,146,60,0.4);  color:#fb923c; }
-        .filter-spacer { flex:1; }
-
-        /* ── TABLE CARD ── */
-        .table-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); overflow:hidden; }
-        .table-header { display:flex; align-items:center; justify-content:space-between; padding:1.125rem 1.5rem; border-bottom:1px solid var(--border); }
-        .table-header h3 { font-family:'Syne',sans-serif; font-size:1rem; font-weight:700; display:flex; align-items:center; gap:0.5rem; }
-        .file-count { font-size:0.8rem; color:var(--muted); font-weight:600; }
-
-        .files-table { width:100%; border-collapse:collapse; }
-        .files-table thead th { padding:0.75rem 1.25rem; text-align:left; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.09em; color:var(--muted); font-weight:700; border-bottom:1px solid var(--border); background:var(--bg3); white-space:nowrap; }
-        .files-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; animation:rowIn 0.35s ease backwards; }
-        .files-table tbody tr:last-child { border-bottom:none; }
-        .files-table tbody tr:hover { background:rgba(255,255,255,0.025); }
-        @keyframes rowIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-        .files-table td { padding:1rem 1.25rem; font-size:0.875rem; color:var(--dim); vertical-align:middle; }
-
-        /* File cell */
-        .file-cell { display:flex; align-items:center; gap:0.75rem; }
-        .file-thumb { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
-        .file-thumb.pdf  { background:rgba(255,101,132,0.12); }
-        .file-thumb.ppt  { background:rgba(247,183,49,0.12); }
-        .file-thumb.doc  { background:rgba(108,99,255,0.12); }
-        .file-thumb.img  { background:rgba(67,233,123,0.12); }
-        .file-thumb.other{ background:rgba(255,255,255,0.05); }
-        .file-title { font-weight:700; font-size:0.875rem; color:var(--text); line-height:1.3; }
-        .file-meta  { font-size:0.72rem; color:var(--muted); margin-top:0.1rem; }
-
-        /* Subject tag */
-        .subject-tag { display:inline-block; padding:0.25rem 0.625rem; background:rgba(108,99,255,0.1); border:1px solid rgba(108,99,255,0.2); border-radius:8px; font-size:0.75rem; font-weight:700; color:#a78bfa; }
-
-        /* Status pill */
-        .status-pill { display:inline-flex; align-items:center; gap:0.35rem; padding:0.3rem 0.75rem; border-radius:100px; font-size:0.75rem; font-weight:700; }
-        .status-pill::before { content:''; width:6px; height:6px; border-radius:50%; }
-        .status-pill.live     { background:rgba(67,233,123,0.1);  color:var(--green); border:1px solid rgba(67,233,123,0.2); }
-        .status-pill.live::before    { background:var(--green); }
-        .status-pill.pending  { background:rgba(251,146,60,0.1);  color:#fb923c;      border:1px solid rgba(251,146,60,0.2); }
-        .status-pill.pending::before { background:#fb923c; }
-        .status-pill.rejected { background:rgba(255,101,132,0.1); color:var(--red);   border:1px solid rgba(255,101,132,0.2); }
-        .status-pill.rejected::before{ background:var(--red); }
-
-        /* Views */
-        .views-cell { font-family:'Syne',sans-serif; font-weight:700; font-size:0.95rem; color:var(--text); }
-
-        /* Action buttons */
-        .actions-cell { display:flex; align-items:center; gap:0.4rem; }
-        .btn-view { padding:0.35rem 0.75rem; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.2); border-radius:8px; color:var(--blue); font-family:inherit; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:0.3rem; white-space:nowrap; }
-        .btn-view:hover { background:rgba(56,189,248,0.18); }
-        .btn-edit { padding:0.35rem 0.75rem; background:rgba(247,183,49,0.1); border:1px solid rgba(247,183,49,0.2); border-radius:8px; color:var(--gold); font-family:inherit; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:0.3rem; white-space:nowrap; }
-        .btn-edit:hover { background:rgba(247,183,49,0.18); }
-        .btn-delete { width:30px;height:30px; background:rgba(255,101,132,0.08); border:1px solid rgba(255,101,132,0.15); border-radius:8px; color:var(--red); cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-        .btn-delete:hover { background:rgba(255,101,132,0.18); }
-
-        /* Empty / skeleton */
-        .empty-state { display:flex; flex-direction:column; align-items:center; padding:3.5rem; color:var(--muted); text-align:center; }
-        .empty-state .e-icon { font-size:2.5rem; margin-bottom:1rem; }
-        .skel { background:linear-gradient(90deg,var(--bg3) 25%,rgba(255,255,255,0.04) 50%,var(--bg3) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:6px; }
-        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-        /* ── EDIT MODAL ── */
-        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:200; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.25s; }
-        .modal-overlay.open { opacity:1; pointer-events:all; }
-        .modal { background:var(--bg2); border:1px solid var(--border); border-radius:20px; width:520px; max-width:95vw; transform:scale(0.95); transition:transform 0.25s ease; overflow:hidden; }
-        .modal-overlay.open .modal { transform:scale(1); }
-        .modal-header { padding:1.5rem 2rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-        .modal-header h3 { font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:700; }
-        .modal-close { width:32px;height:32px; background:var(--bg3); border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--muted); transition:all 0.2s; font-size:1rem; }
-        .modal-close:hover { background:rgba(255,101,132,0.1); color:var(--red); }
-        .modal-body { padding:1.75rem 2rem; display:flex; flex-direction:column; gap:1.1rem; }
-        .form-group { display:flex; flex-direction:column; gap:0.4rem; }
-        .form-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--dim); }
-        .form-input,.form-select,.form-textarea { width:100%; padding:0.7rem 0.9rem; background:var(--bg3); border:1px solid var(--border); border-radius:10px; color:var(--text); font-family:inherit; font-size:0.875rem; outline:none; transition:border-color 0.2s; }
-        .form-input:focus,.form-select:focus,.form-textarea:focus { border-color:var(--accent); }
-        .form-select option { background:var(--bg3); }
-        .form-textarea { resize:vertical; min-height:80px; }
-        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
-        .modal-footer { padding:1.25rem 2rem; border-top:1px solid var(--border); display:flex; gap:0.75rem; justify-content:flex-end; }
-        .btn-secondary { padding:0.75rem 1.25rem; background:var(--bg3); border:1px solid var(--border); border-radius:12px; color:var(--dim); font-family:inherit; font-weight:700; font-size:0.875rem; cursor:pointer; transition:all 0.2s; }
-        .btn-secondary:hover { border-color:var(--border-h); }
-        .btn-primary { padding:0.75rem 1.5rem; background:var(--accent); border:none; border-radius:12px; color:white; font-family:inherit; font-weight:700; font-size:0.875rem; cursor:pointer; transition:all 0.2s; }
-        .btn-primary:hover { background:#5b52e0; }
-        .btn-primary:disabled { opacity:0.5; cursor:not-allowed; }
-
-        /* ── TOAST ── */
-        .toast-container { position:fixed; bottom:1.5rem; right:1.5rem; z-index:999; display:flex; flex-direction:column; gap:0.75rem; }
-        .toast { padding:0.875rem 1.25rem; border-radius:14px; font-weight:600; font-size:0.875rem; box-shadow:0 8px 32px rgba(0,0,0,0.4); animation:toastIn 0.3s ease; display:flex; align-items:center; gap:0.5rem; min-width:250px; }
-        @keyframes toastIn { from{transform:translateY(16px);opacity:0} to{transform:translateY(0);opacity:1} }
-        .toast.success { background:#0d2d1f; border:1px solid rgba(67,233,123,0.25); color:var(--green); }
-        .toast.error   { background:#2d0d15; border:1px solid rgba(255,101,132,0.25); color:var(--red); }
-        .toast.info    { background:#1a1530; border:1px solid rgba(108,99,255,0.25); color:#a78bfa; }
-
-        @media(max-width:1100px) { .stats-grid { grid-template-columns:repeat(2,1fr); } }
-        @media(max-width:900px)  { .files-table td:nth-child(4),.files-table th:nth-child(4) { display:none; } }
+        .btn-action { background:none; border:none; color:rgba(255,255,255,0.5); cursor:pointer; transition:color 0.2s; margin-left:12px; }
+        .btn-action:hover { color:#ff6b81; }
+        .loader { padding: 40px; text-align:center; color:rgba(255,255,255,0.5); }
     </style>
 </head>
 <body>
 
-<!-- ── SIDEBAR ── -->
-<aside class="sidebar">
-    <div class="sidebar-logo">
-        <div class="logo-text">EduHub</div>
-        <div class="logo-sub">Faculty Portal · BCA Dept.</div>
-    </div>
-    <div class="sidebar-profile">
-        <div class="avatar" id="avatarInitials">PS</div>
-        <div class="profile-info">
-            <div class="name" id="sidebarName">Prof. Sharma</div>
-            <div class="role-badge">Faculty</div>
+    <aside class="sidebar">
+        <div class="logo">🎓 EduHub</div>
+        <div class="nav-items">
+            <a href="teacher.html" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="myuploads.html" class="nav-item active"><i class="fas fa-folder"></i> My Uploads</a>
+            <a href="notices.html" class="nav-item"><i class="fas fa-bullhorn"></i> Notices</a>
         </div>
-    </div>
-    <nav class="sidebar-nav">
-        <div class="nav-section-label">Main</div>
-        <div class="nav-item" onclick="go('teacher.html')">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"/></svg>
-            Dashboard
-        </div>
-        <div class="nav-item" onclick="openUploadModal()">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-            Upload Material
-        </div>
-        <div class="nav-item active">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
-            My Uploads
-        </div>
-        <div class="nav-item" onclick="go('teacher.html')">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7M4 7c0-2 1-3 3-3h10c2 0 3 1 3 3M4 7h16"/></svg>
-            Repository
-        </div>
-        <div class="nav-section-label" style="margin-top:1rem">Management</div>
-        <div class="nav-item" onclick="go('teacher.html')">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-            Review Uploads
-            <span class="nav-badge" id="reviewBadge">0</span>
-        </div>
-        <div class="nav-item" onclick="go('notices.html')">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-            Notices
-        </div>
-        <div class="nav-section-label" style="margin-top:1rem">Account</div>
-        <div class="nav-item">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            Settings
-        </div>
-    </nav>
-    <div class="sidebar-footer">
-        <button class="signout-btn" onclick="signOut()">
-            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-            Sign Out
-        </button>
-    </div>
-</aside>
-
-<!-- ── MAIN ── -->
-<div class="main">
-    <div class="topbar">
-        <div class="breadcrumb">
-            <a href="teacher.html">Dashboard</a>
-            <span class="sep">›</span>
-            <span class="current">My Uploads</span>
-        </div>
-        <div class="search-bar">
-            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:#6b7280;flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <input type="text" placeholder="Search my files..." id="searchInput" oninput="applyFilters()">
-        </div>
-        <div class="notif-btn">
-            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:#9ca3af"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-            <div class="notif-dot"></div>
-        </div>
-    </div>
-
-    <div class="content">
-
-        <!-- PAGE HEADER -->
-        <div class="page-header">
-            <h1>📁 My <span>Uploads</span></h1>
-            <button class="upload-new-btn" onclick="openUploadModal()">
-                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                Upload New
-            </button>
-        </div>
-
-        <!-- STATS -->
-        <div class="stats-grid">
-            <div class="stat-card yellow">
-                <span class="stat-icon">📁</span>
-                <div class="stat-value" id="statTotal">—</div>
-                <div class="stat-label">Total Uploaded</div>
-                <div class="stat-sub green">All time</div>
+        <div class="user-profile">
+            <div class="avatar" id="userAvatar">T</div>
+            <div class="user-info">
+                <h4 id="userName">Loading...</h4>
+                <p>Faculty</p>
             </div>
-            <div class="stat-card green">
-                <span class="stat-icon">✅</span>
-                <div class="stat-value" id="statLive">—</div>
-                <div class="stat-label">Live</div>
-                <div class="stat-sub green">Approved &amp; active</div>
-            </div>
-            <div class="stat-card orange">
-                <span class="stat-icon">⏳</span>
-                <div class="stat-value" id="statPending">—</div>
-                <div class="stat-label">Processing</div>
-                <div class="stat-sub orange" id="statPendingSub">Awaiting review</div>
-            </div>
-            <div class="stat-card purple">
-                <span class="stat-icon">👁️</span>
-                <div class="stat-value" id="statViews">—</div>
-                <div class="stat-label">Total Views</div>
-                <div class="stat-sub purple">↑ 14% this month</div>
+            <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="header">
+            <div>
+                <h1>My Uploads</h1>
+                <p style="color:rgba(255,255,255,0.5); margin-top:4px;">Manage and monitor all resources you've shared.</p>
             </div>
         </div>
 
-        <!-- FILTERS -->
-        <div class="filter-row">
-            <div class="chip active" data-filter="all"     onclick="setFilter('all',    this)">All</div>
-            <div class="chip f-pdf"  data-filter="PDF"     onclick="setFilter('PDF',    this)">📄 PDF</div>
-            <div class="chip f-ppt"  data-filter="PPT"     onclick="setFilter('PPT',    this)">📊 PPT</div>
-            <div class="chip f-doc"  data-filter="DOC"     onclick="setFilter('DOC',    this)">📝 DOC</div>
-            <div class="chip f-live" data-filter="APPROVED"onclick="setFilter('APPROVED',this)">🟢 Live</div>
-            <div class="chip f-pending" data-filter="PENDING" onclick="setFilter('PENDING',this)">🟡 Pending</div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Subject</th>
+                        <th>Status</th>
+                        <th>Views</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr><td colspan="6" class="loader"><i class="fas fa-circle-notch fa-spin"></i> Loading...</td></tr>
+                </tbody>
+            </table>
         </div>
+    </main>
 
-        <!-- TABLE -->
-        <div class="table-card">
-            <div class="table-header">
-                <h3>📋 My Files</h3>
-                <span class="file-count" id="fileCount">Loading...</span>
-            </div>
-            <div id="tableBody">
-                <!-- skeleton -->
-                <table class="files-table">
-                    <thead><tr>
-                        <th>File</th><th>Subject</th><th>Sem</th><th>Type</th><th>Status</th><th>Views</th><th>Actions</th>
-                    </tr></thead>
-                    <tbody id="tableRows">
-                        <tr><td colspan="7">
-                            <div style="padding:1.5rem 1.25rem;display:flex;flex-direction:column;gap:0.75rem">
-                                <div class="skel" style="height:14px;width:55%"></div>
-                                <div class="skel" style="height:10px;width:80%"></div>
-                                <div class="skel" style="height:14px;width:40%;margin-top:0.5rem"></div>
-                                <div class="skel" style="height:10px;width:70%"></div>
-                            </div>
-                        </td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000';
+        const token = localStorage.getItem('access_token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-    </div>
-</div>
-
-<!-- ── EDIT MODAL ── -->
-<div class="modal-overlay" id="editModal">
-    <div class="modal">
-        <div class="modal-header">
-            <h3>✏️ Edit Resource</h3>
-            <div class="modal-close" onclick="closeEditModal()">✕</div>
-        </div>
-        <div class="modal-body">
-            <input type="hidden" id="editId">
-            <div class="form-group">
-                <label class="form-label">Title <span style="color:var(--red)">*</span></label>
-                <input type="text" class="form-input" id="editTitle" placeholder="Resource title">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Description</label>
-                <textarea class="form-textarea" id="editDesc" placeholder="Optional description"></textarea>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">File Type</label>
-                    <select class="form-select" id="editFileType">
-                        <option value="PDF">📄 PDF</option>
-                        <option value="PPT">📊 PPT</option>
-                        <option value="DOC">📝 DOC</option>
-                        <option value="IMG">🖼️ Image</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Reference URL <span style="color:var(--muted);font-size:0.65rem;text-transform:none">(optional)</span></label>
-                    <input type="url" class="form-input" id="editRefUrl" placeholder="https://...">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Replace File <span style="color:var(--muted);font-size:0.65rem;text-transform:none">(leave empty to keep current)</span></label>
-                <input type="file" class="form-input" id="editFile" style="padding:0.5rem" accept=".pdf,.ppt,.pptx,.doc,.docx,.jpg,.png">
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn-secondary" onclick="closeEditModal()">Cancel</button>
-            <button class="btn-primary" id="editSaveBtn" onclick="saveEdit()">Save Changes</button>
-        </div>
-    </div>
-</div>
-
-<!-- ── UPLOAD MODAL ── -->
-<div class="modal-overlay" id="uploadModal">
-    <div class="modal">
-        <div class="modal-header">
-            <h3>📤 Upload New Material</h3>
-            <div class="modal-close" onclick="closeUploadModal()">✕</div>
-        </div>
-        <div class="modal-body">
-            <div class="form-group">
-                <label class="form-label">Title <span style="color:var(--red)">*</span></label>
-                <input type="text" class="form-input" id="uploadTitle" placeholder="e.g. DS Unit 3 – Trees">
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Subject <span style="color:var(--red)">*</span></label>
-                    <select class="form-select" id="uploadSubjectId">
-                        <option value="">Loading subjects...</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">File Type <span style="color:var(--red)">*</span></label>
-                    <select class="form-select" id="uploadFileType">
-                        <option value="">Select type</option>
-                        <option value="PDF">📄 PDF</option>
-                        <option value="PPT">📊 PPT / PPTX</option>
-                        <option value="DOC">📝 DOC / DOCX</option>
-                        <option value="IMG">🖼️ Image</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Description</label>
-                <textarea class="form-textarea" id="uploadDesc" placeholder="Optional description"></textarea>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Reference URL <span style="color:var(--muted);font-size:0.65rem;text-transform:none">(optional)</span></label>
-                <input type="url" class="form-input" id="uploadRefUrl" placeholder="https://...">
-            </div>
-            <div class="form-group">
-                <label class="form-label">File <span style="color:var(--muted);font-size:0.65rem;text-transform:none">(optional if URL provided)</span></label>
-                <input type="file" class="form-input" id="uploadFile" style="padding:0.5rem" accept=".pdf,.ppt,.pptx,.doc,.docx,.jpg,.jpeg,.png">
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn-secondary" onclick="closeUploadModal()">Cancel</button>
-            <button class="btn-primary" id="uploadSaveBtn" onclick="submitUpload()">
-                <span id="uploadBtnText">Upload</span>
-            </button>
-        </div>
-    </div>
-</div>
-
-<div class="toast-container" id="toastContainer"></div>
-
-<script>
-const API = 'http://127.0.0.1:8000';
-function getToken()    { return localStorage.getItem('access_token'); }
-function authHeaders() { return { 'Authorization': 'Bearer ' + getToken(), 'Content-Type': 'application/json' }; }
-
-let allResources = [];
-let activeFilter = 'all';
-let searchQuery  = '';
-
-// ─── INIT ───────────────────────────────────────────────────────────
-function init() {
-    const username = localStorage.getItem('username') || 'Prof. Sharma';
-    const initials = username.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-    document.getElementById('avatarInitials').textContent = initials;
-    document.getElementById('sidebarName').textContent    = username;
-    loadResources();
-}
-
-// ─── LOAD from GET /resource/api/resources/ ──────────────────────────
-// ResourceSerializer: subject is nested {id, sub_code, name, sem:{sem_nmbr}, faculty}
-// uploaded_by: StringRelatedField (username string)
-// status: APPROVED | PENDING | REJECTED
-// view_count, file_type, title, description, file, reference_url, created_at
-async function loadResources() {
-    try {
-        const res = await fetch(API + '/resource/api/resources/', { headers: authHeaders() });
-        if (res.status === 401) { signOut(); return; }
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-
-        const data = await res.json();
-        allResources = Array.isArray(data) ? data : (data.results || []);
-
-        renderStats();
-        renderTable();
-    } catch(e) {
-        console.error(e);
-        document.getElementById('tableRows').innerHTML =
-            '<tr><td colspan="7"><div class="empty-state"><div class="e-icon">⚠️</div><p>Could not load resources. Is the server running?</p></div></td></tr>';
-        document.getElementById('fileCount').textContent = 'error';
-    }
-}
-
-// ─── STATS ───────────────────────────────────────────────────────────
-function renderStats() {
-    const total   = allResources.length;
-    const live    = allResources.filter(r => r.status === 'APPROVED').length;
-    const pending = allResources.filter(r => r.status === 'PENDING').length;
-    const views   = allResources.reduce((s, r) => s + (r.view_count || 0), 0);
-
-    animateCount('statTotal',   total);
-    animateCount('statLive',    live);
-    animateCount('statPending', pending);
-    animateCount('statViews',   views, true);
-
-    const pSub = document.getElementById('statPendingSub');
-    pSub.textContent  = pending > 0 ? 'Awaiting review' : 'All reviewed';
-    pSub.className    = 'stat-sub ' + (pending > 0 ? 'orange' : 'green');
-}
-
-function animateCount(id, target, fmt) {
-    const el = document.getElementById(id);
-    const dur = 700, t0 = performance.now();
-    function tick(now) {
-        const p = Math.min((now - t0) / dur, 1);
-        const v = Math.round((1 - Math.pow(1-p,3)) * target);
-        el.textContent = fmt && v >= 1000 ? (v/1000).toFixed(1)+'k' : v.toLocaleString();
-        if (p < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-}
-
-// ─── FILTER + SEARCH ─────────────────────────────────────────────────
-function setFilter(f, el) {
-    activeFilter = f;
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-    renderTable();
-}
-
-function applyFilters() {
-    searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
-    renderTable();
-}
-
-function getFiltered() {
-    return allResources.filter(r => {
-        if (activeFilter !== 'all') {
-            if (['PDF','PPT','DOC','IMG'].includes(activeFilter) && r.file_type !== activeFilter) return false;
-            if (['APPROVED','PENDING','REJECTED'].includes(activeFilter) && r.status !== activeFilter) return false;
-        }
-        if (searchQuery) {
-            const hay = ((r.title||'') + ' ' + (r.subject?.sub_code||'') + ' ' + (r.subject?.name||'')).toLowerCase();
-            if (!hay.includes(searchQuery)) return false;
-        }
-        return true;
-    });
-}
-
-// ─── RENDER TABLE ────────────────────────────────────────────────────
-const FT_ICONS = { PDF:'📄', PPT:'📊', DOC:'📝', IMG:'🖼️' };
-const FT_CLS   = { PDF:'pdf', PPT:'ppt', DOC:'doc', IMG:'img' };
-
-function renderTable() {
-    const items = getFiltered();
-    document.getElementById('fileCount').textContent = items.length + ' file' + (items.length !== 1 ? 's' : '');
-
-    if (!items.length) {
-        document.getElementById('tableRows').innerHTML =
-            '<tr><td colspan="7"><div class="empty-state"><div class="e-icon">📭</div><p>No files found' + (searchQuery ? ' for "'+searchQuery+'"' : '') + '</p></div></td></tr>';
-        // Still render table headers
-        ensureTableHeader();
-        return;
-    }
-
-    ensureTableHeader();
-
-    document.getElementById('tableRows').innerHTML = items.map((r, i) => {
-        const ft       = (r.file_type || 'PDF').toUpperCase();
-        const icon     = FT_ICONS[ft] || '📁';
-        const ftCls    = FT_CLS[ft]   || 'other';
-        const subCode  = r.subject?.sub_code || '—';
-        const semNum   = r.subject?.sem?.sem_nmbr ? r.subject.sem.sem_nmbr + 'th' : '—';
-        // Derive "unit" from description if present, else show type label
-        const unitLabel= r.description ? r.description.split(' ').slice(0,3).join(' ') : '—';
-        // Type: is_official → Official Notes, else Textbook / Reference
-        const typeLabel= r.is_official ? 'Official Notes' : (ft === 'PPT' ? 'Slides' : 'Reference');
-        const statusLC = (r.status || 'PENDING').toLowerCase();
-        const statusLabel = r.status === 'APPROVED' ? 'Live' : r.status === 'REJECTED' ? 'Rejected' : 'Processing';
-        const views    = (r.view_count || 0).toLocaleString();
-        // Filename from file field (last segment) or title
-        const fileName = r.file ? r.file.split('/').pop() : (r.title + '.' + ft.toLowerCase());
-        const fileSize = ''; // not in model
-
-        return `<tr style="animation-delay:${i*0.04}s">
-            <td>
-                <div class="file-cell">
-                    <div class="file-thumb ${ftCls}">${icon}</div>
-                    <div>
-                        <div class="file-title">${esc(r.title || 'Untitled')}</div>
-                        <div class="file-meta">${esc(fileName)}</div>
-                    </div>
-                </div>
-            </td>
-            <td><span class="subject-tag">${esc(subCode)}</span></td>
-            <td style="color:var(--dim);font-size:0.85rem">${semNum}</td>
-            <td style="color:var(--dim);font-size:0.85rem">${typeLabel}</td>
-            <td><span class="status-pill ${statusLC}">${statusLabel}</span></td>
-            <td><span class="views-cell">${views}</span></td>
-            <td>
-                <div class="actions-cell">
-                    <button class="btn-view" onclick="viewResource(${r.id},'${r.file||''}')">
-                        👁 View
-                    </button>
-                    <button class="btn-edit" onclick="openEditModal(${r.id})">
-                        ✏️ Edit
-                    </button>
-                    <button class="btn-delete" title="Delete" onclick="deleteResource(${r.id}, this)">
-                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                    </button>
-                </div>
-            </td>
-        </tr>`;
-    }).join('');
-}
-
-function ensureTableHeader() {
-    // Make sure the table structure exists
-    const body = document.getElementById('tableBody');
-    if (!body.querySelector('table')) {
-        body.innerHTML = `
-        <table class="files-table">
-            <thead><tr>
-                <th>File</th><th>Subject</th><th>Sem</th><th>Type</th><th>Status</th><th>Views</th><th>Actions</th>
-            </tr></thead>
-            <tbody id="tableRows"></tbody>
-        </table>`;
-    }
-}
-
-// ─── VIEW ────────────────────────────────────────────────────────────
-function viewResource(id, fileUrl) {
-    if (fileUrl && fileUrl !== 'null' && fileUrl !== '') {
-        const url = fileUrl.startsWith('http') ? fileUrl : API + '/media/' + fileUrl;
-        window.open(url, '_blank');
-    } else {
-        showToast('No file attached to this resource', 'info');
-    }
-}
-
-// ─── EDIT MODAL ──────────────────────────────────────────────────────
-function openEditModal(id) {
-    const r = allResources.find(x => x.id === id);
-    if (!r) return;
-
-    document.getElementById('editId').value       = r.id;
-    document.getElementById('editTitle').value    = r.title || '';
-    document.getElementById('editDesc').value     = r.description || '';
-    document.getElementById('editFileType').value = r.file_type || 'PDF';
-    document.getElementById('editRefUrl').value   = r.reference_url || '';
-    document.getElementById('editFile').value     = '';
-
-    document.getElementById('editModal').classList.add('open');
-}
-
-function closeEditModal() {
-    document.getElementById('editModal').classList.remove('open');
-}
-
-// PATCH /resource/api/resources/{id}/
-async function saveEdit() {
-    const id    = document.getElementById('editId').value;
-    const title = document.getElementById('editTitle').value.trim();
-    if (!title) { showToast('Title is required', 'error'); return; }
-
-    const btn = document.getElementById('editSaveBtn');
-    btn.disabled = true;
-    btn.textContent = 'Saving...';
-
-    try {
-        const fileInput = document.getElementById('editFile');
-        const hasFile   = fileInput.files.length > 0;
-
-        let res;
-        if (hasFile) {
-            // Use FormData for file upload
-            const fd = new FormData();
-            fd.append('title',         title);
-            fd.append('description',   document.getElementById('editDesc').value);
-            fd.append('file_type',     document.getElementById('editFileType').value);
-            fd.append('reference_url', document.getElementById('editRefUrl').value);
-            fd.append('file',          fileInput.files[0]);
-            res = await fetch(API + '/resource/api/resources/' + id + '/', {
-                method: 'PATCH',
-                headers: { 'Authorization': 'Bearer ' + getToken() },
-                body: fd
-            });
-        } else {
-            res = await fetch(API + '/resource/api/resources/' + id + '/', {
-                method: 'PATCH',
-                headers: authHeaders(),
-                body: JSON.stringify({
-                    title,
-                    description:   document.getElementById('editDesc').value,
-                    file_type:     document.getElementById('editFileType').value,
-                    reference_url: document.getElementById('editRefUrl').value
-                })
-            });
+        if (!token || (user.role !== 'faculty' && user.role !== 'admin')) {
+            window.location.href = 'login.html';
         }
 
-        if (res.ok) {
-            const updated = await res.json();
-            // Update in local array
-            const idx = allResources.findIndex(x => x.id === parseInt(id));
-            if (idx >= 0) allResources[idx] = updated;
-            renderStats();
-            renderTable();
-            closeEditModal();
-            showToast('Resource updated successfully!', 'success');
-        } else {
-            const err = await res.json().catch(() => ({}));
-            showToast(err.detail || err.title?.[0] || 'Update failed', 'error');
-        }
-    } catch {
-        showToast('Network error', 'error');
-    } finally {
-        btn.disabled = false;
-        btn.textContent = 'Save Changes';
-    }
-}
+        document.getElementById('userName').textContent = user.username;
+        document.getElementById('userAvatar').textContent = user.username.charAt(0).toUpperCase();
 
-// ─── DELETE ──────────────────────────────────────────────────────────
-// DELETE /resource/api/resources/{id}/
-async function deleteResource(id, btn) {
-    if (!confirm('Delete this resource? This cannot be undone.')) return;
-    btn.disabled = true;
-    try {
-        const res = await fetch(API + '/resource/api/resources/' + id + '/', {
-            method: 'DELETE',
-            headers: authHeaders()
-        });
-        if (res.ok || res.status === 204) {
-            allResources = allResources.filter(r => r.id !== id);
-            renderStats();
-            renderTable();
-            showToast('Resource deleted', 'info');
-        } else {
-            showToast('Could not delete resource', 'error');
-            btn.disabled = false;
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
         }
-    } catch {
-        showToast('Network error', 'error');
-        btn.disabled = false;
-    }
-}
 
-// ─── UPLOAD MODAL ────────────────────────────────────────────────────
-async function openUploadModal() {
-    document.getElementById('uploadModal').classList.add('open');
-    // Load subjects from existing resources
-    const sel = document.getElementById('uploadSubjectId');
-    sel.innerHTML = '<option value="">Loading...</option>';
-    try {
-        const res  = await fetch(API + '/resource/api/resources/', { headers: authHeaders() });
-        const data = await res.json();
-        const items= Array.isArray(data) ? data : (data.results || []);
-        const seen = {};
-        const subjects = [];
-        items.forEach(item => {
-            if (item.subject && item.subject.id && !seen[item.subject.id]) {
-                seen[item.subject.id] = true;
-                subjects.push(item.subject);
+        async function fetchUploads() {
+            const tbody = document.getElementById('tableBody');
+            try {
+                // Fetch using the generic resource endpoint (filtered by current faculty in backend)
+                const res = await fetch(`${API_BASE}/resource/api/resources/`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (res.status === 401) return logout();
+                const data = await res.json();
+                
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:rgba(255,255,255,0.5);">No uploads found.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = data.map(r => `
+                    <tr>
+                        <td style="font-weight:500;">
+                            <i class="fas fa-file-alt" style="color:#667eea; margin-right:8px;"></i>
+                            ${r.title}
+                        </td>
+                        <td style="color:rgba(255,255,255,0.7);">${r.subject ? r.subject.sub_code : '-'}</td>
+                        <td><span class="status-badge status-${r.status.toLowerCase()}">${r.status}</span></td>
+                        <td>${r.view_count}</td>
+                        <td style="color:rgba(255,255,255,0.5);">${new Date(r.created_at).toLocaleDateString()}</td>
+                        <td>
+                            <button class="btn-action" onclick="deleteUpload(${r.id})" title="Delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch(e) {
+                console.error(e);
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#ff6b81;">Failed to load data.</td></tr>';
             }
-        });
-        sel.innerHTML = '<option value="">Select subject</option>';
-        subjects.forEach(s => {
-            const sem  = s.sem?.sem_nmbr ? ' · Sem ' + s.sem.sem_nmbr : '';
-            const name = s.name ? ' — ' + s.name : '';
-            sel.innerHTML += `<option value="${s.id}">${s.sub_code}${name}${sem}</option>`;
-        });
-        if (!subjects.length) sel.innerHTML = '<option value="">No subjects found</option>';
-    } catch {
-        sel.innerHTML = '<option value="">Could not load subjects</option>';
-    }
-}
-
-function closeUploadModal() {
-    document.getElementById('uploadModal').classList.remove('open');
-    ['uploadTitle','uploadDesc','uploadRefUrl'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('uploadSubjectId').value  = '';
-    document.getElementById('uploadFileType').value   = '';
-    document.getElementById('uploadFile').value       = '';
-}
-
-async function submitUpload() {
-    const title     = document.getElementById('uploadTitle').value.trim();
-    const subjectId = document.getElementById('uploadSubjectId').value;
-    const fileType  = document.getElementById('uploadFileType').value;
-    const desc      = document.getElementById('uploadDesc').value.trim();
-    const refUrl    = document.getElementById('uploadRefUrl').value.trim();
-    const file      = document.getElementById('uploadFile').files[0] || null;
-
-    if (!title)     { showToast('Title is required', 'error'); return; }
-    if (!subjectId) { showToast('Please select a subject', 'error'); return; }
-    if (!fileType)  { showToast('Please select a file type', 'error'); return; }
-    if (!file && !refUrl) { showToast('Attach a file or provide a URL', 'error'); return; }
-
-    const btn = document.getElementById('uploadSaveBtn');
-    const txt = document.getElementById('uploadBtnText');
-    btn.disabled = true; txt.textContent = 'Uploading...';
-
-    try {
-        const fd = new FormData();
-        fd.append('title', title);
-        fd.append('subject', subjectId);
-        fd.append('file_type', fileType);
-        if (desc)   fd.append('description', desc);
-        if (refUrl) fd.append('reference_url', refUrl);
-        if (file)   fd.append('file', file);
-
-        const res = await fetch(API + '/resource/api/resources/', {
-            method: 'POST',
-            headers: { 'Authorization': 'Bearer ' + getToken() },
-            body: fd
-        });
-
-        if (res.ok || res.status === 201) {
-            const created = await res.json();
-            allResources.unshift(created);
-            renderStats();
-            renderTable();
-            closeUploadModal();
-            showToast('Material uploaded successfully! 🎉', 'success');
-        } else {
-            const err = await res.json().catch(() => ({}));
-            showToast(err.detail || err.title?.[0] || err.subject?.[0] || 'Upload failed', 'error');
         }
-    } catch { showToast('Network error', 'error'); }
-    finally  { btn.disabled = false; txt.textContent = 'Upload'; }
-}
 
-// ─── UTILS ───────────────────────────────────────────────────────────
-function esc(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+        async function deleteUpload(id) {
+            if (!confirm('Are you sure you want to delete this resource?')) return;
+            try {
+                const res = await fetch(`${API_BASE}/resource/api/resources/${id}/`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    fetchUploads();
+                } else {
+                    alert('Delete failed.');
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
 
-function showToast(msg, type='info') {
-    const icons = { success:'✓', error:'✕', info:'ℹ' };
-    const t = document.createElement('div');
-    t.className = 'toast ' + type;
-    t.innerHTML = '<span>' + icons[type] + '</span> ' + msg;
-    document.getElementById('toastContainer').appendChild(t);
-    setTimeout(() => t.remove(), 3500);
-}
-
-function signOut() { localStorage.clear(); window.location.href = 'login.html'; }
-function go(page)  { window.location.href = page; }
-
-// Close modals on overlay click
-['editModal','uploadModal'].forEach(id => {
-    document.getElementById(id).addEventListener('click', function(e) {
-        if (e.target === this) this.classList.remove('open');
-    });
-});
-
-// Render the table shell immediately so header shows during load
-document.getElementById('tableBody').innerHTML = `
-    <table class="files-table">
-        <thead><tr>
-            <th>File</th><th>Subject</th><th>Sem</th><th>Type</th><th>Status</th><th>Views</th><th>Actions</th>
-        </tr></thead>
-        <tbody id="tableRows"><tr><td colspan="7">
-            <div style="padding:1.5rem 1.25rem;display:flex;flex-direction:column;gap:0.75rem">
-                <div class="skel" style="height:14px;width:55%"></div>
-                <div class="skel" style="height:10px;width:80%"></div>
-            </div>
-        </td></tr></tbody>
-    </table>`;
-
-init();
-</script>
+        fetchUploads();
+    </script>
 </body>
 </html>

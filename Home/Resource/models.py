@@ -6,7 +6,6 @@ User = get_user_model()
 
 
 class Resource(models.Model):
-
     FILE_TYPES = (
         ('PDF', 'PDF'),
         ('PPT', 'PPT'),
@@ -24,22 +23,17 @@ class Resource(models.Model):
     description = models.TextField(blank=True)
     file = models.FileField(upload_to='resources/', blank=True, null=True)
     reference_url = models.URLField(blank=True, null=True)
-
     file_type = models.CharField(max_length=10, choices=FILE_TYPES)
-
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="resources")
     uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
-
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     is_official = models.BooleanField(default=False)
-
     view_count = models.IntegerField(default=0)
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        # Auto-approve if faculty or admin
+        # Auto-approve if uploaded by faculty or admin
         if self.uploaded_by.role in ['faculty', 'admin']:
             self.status = 'APPROVED'
             self.is_official = True
@@ -47,7 +41,6 @@ class Resource(models.Model):
 
     def __str__(self):
         return self.title
-    
 
 
 class ResourceDownload(models.Model):
