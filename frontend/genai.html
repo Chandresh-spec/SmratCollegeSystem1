@@ -277,9 +277,10 @@
 
 </div>
 
+<script src="config.js"></script>
 <script>
-  // API endpoint - local for now
-  const API = "http://127.0.0.1:8000/Genai/api/genai/";
+  // API endpoint
+  const API = `${API_BASE}/Genai/api/genai/`;
 
   // read access token from URL — passed by student.html when opening this page
   const urlParams = new URLSearchParams(window.location.search);

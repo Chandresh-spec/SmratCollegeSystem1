@@ -79,7 +79,37 @@
 
         .btn-action { background:none; border:none; color:rgba(255,255,255,0.5); cursor:pointer; transition:color 0.2s; margin-left:12px; }
         .btn-action:hover { color:#ff6b81; }
+        .btn-edit:hover { color:#667eea; }
         .loader { padding: 40px; text-align:center; color:rgba(255,255,255,0.5); }
+        
+        /* Modal & Buttons */
+        .btn-upload {
+            padding: 12px 24px; border-radius: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2); border:none;
+            color: #fff; font-weight: 600; cursor:pointer;
+            display: flex; align-items:center; gap:8px; transition: transform 0.3s;
+        }
+        .btn-upload:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102,126,234,0.3); }
+        .modal-overlay {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+            display:none; align-items:center; justify-content:center; z-index:1000;
+        }
+        .modal {
+            background: #1a1a2e; width:100%; max-width:500px;
+            border-radius:20px; border:1px solid rgba(255,255,255,0.1);
+            padding:32px;
+        }
+        .modal-header { display:flex; justify-content:space-between; margin-bottom:24px; }
+        .close-btn { background:none; border:none; color:rgba(255,255,255,0.5); cursor:pointer; font-size:18px; }
+        .form-group { margin-bottom:16px; }
+        .form-group label { display:block; font-size:13px; color:rgba(255,255,255,0.7); margin-bottom:6px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width:100%; padding:12px; background:rgba(255,255,255,0.05);
+            border:1px solid rgba(255,255,255,0.1); border-radius:8px;
+            color:#fff; font-family:'Inter';
+        }
+        .form-group textarea { height:80px; resize:none; }
     </style>
 </head>
 <body>
@@ -107,6 +137,7 @@
                 <h1>My Uploads</h1>
                 <p style="color:rgba(255,255,255,0.5); margin-top:4px;">Manage and monitor all resources you've shared.</p>
             </div>
+            <button class="btn-upload" onclick="openModal()"><i class="fas fa-plus"></i> Upload Resource</button>
         </div>
 
         <div class="table-container">
@@ -128,8 +159,55 @@
         </div>
     </main>
 
+    <!-- Upload/Edit Modal -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Upload New Resource</h3>
+                <button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="uploadForm">
+                <input type="hidden" id="editResourceId" value="">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="resTitle" required placeholder="Lecture 1: Introduction">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="resDesc" placeholder="Brief notes about this upload..."></textarea>
+                </div>
+                <div class="form-group" style="display:flex; gap:12px;">
+                    <div style="flex:1;">
+                        <label>Subject</label>
+                        <select id="resSubject" required>
+                            <option value="">Loading subjects...</option>
+                        </select>
+                    </div>
+                    <div style="flex:1;">
+                        <label>File Type</label>
+                        <select id="resType" required>
+                            <option value="PDF">PDF Document</option>
+                            <option value="PPT">Presentation</option>
+                            <option value="DOC">Word Document</option>
+                            <option value="IMG">Image</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>File</label>
+                    <input type="file" id="resFile">
+                    <small id="fileHelp" style="display:none; color:rgba(255,255,255,0.5); font-size:11px;">Leave blank to keep existing file.</small>
+                </div>
+                <button type="submit" class="btn-upload" style="width:100%; justify-content:center; margin-top:24px;" id="submitUploadBtn">
+                    Upload & Publish
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
     <script>
-        const API_BASE = 'http://127.0.0.1:8000';
+        
         const token = localStorage.getItem('access_token');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
 
@@ -144,6 +222,90 @@
             localStorage.clear();
             window.location.href = 'login.html';
         }
+
+        let subjectsLoaded = false;
+        async function loadSubjects() {
+            const select = document.getElementById('resSubject');
+            if (subjectsLoaded) return;
+            try {
+                const res = await fetch(`${API_BASE}/academic/api/subjects/`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                const options = data.map(sub => `<option value="${sub.id}">${sub.sub_code} - ${sub.sub_name}</option>`);
+                select.innerHTML = options.length ? options.join('') : '<option disabled>No subjects available</option>';
+                subjectsLoaded = true;
+            } catch(e) { console.error(e); }
+        }
+
+        function openModal() {
+            document.getElementById('uploadModal').style.display = 'flex';
+            document.getElementById('modalTitle').textContent = 'Upload New Resource';
+            document.getElementById('submitUploadBtn').innerHTML = 'Upload & Publish';
+            document.getElementById('uploadForm').reset();
+            document.getElementById('editResourceId').value = '';
+            document.getElementById('resFile').required = true;
+            document.getElementById('fileHelp').style.display = 'none';
+            loadSubjects();
+        }
+
+        function closeModal() {
+            document.getElementById('uploadModal').style.display = 'none';
+        }
+
+        function openEditModal(id, title, desc, subjectId, type) {
+            openModal();
+            document.getElementById('modalTitle').textContent = 'Edit Resource';
+            document.getElementById('submitUploadBtn').innerHTML = 'Save Changes';
+            document.getElementById('editResourceId').value = id;
+            document.getElementById('resTitle').value = title;
+            document.getElementById('resDesc').value = desc;
+            document.getElementById('resType').value = type;
+            document.getElementById('resFile').required = false;
+            document.getElementById('fileHelp').style.display = 'block';
+            setTimeout(() => { document.getElementById('resSubject').value = subjectId; }, 500); // wait for subjects to load
+        }
+
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitUploadBtn');
+            btn.disabled = true; btn.textContent = 'Saving...';
+
+            const editId = document.getElementById('editResourceId').value;
+            const formData = new FormData();
+            formData.append('title', document.getElementById('resTitle').value);
+            formData.append('description', document.getElementById('resDesc').value);
+            formData.append('subject', document.getElementById('resSubject').value);
+            formData.append('file_type', document.getElementById('resType').value);
+            
+            const fileInput = document.getElementById('resFile');
+            if (fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+            }
+
+            const url = editId ? `${API_BASE}/resource/api/resources/${editId}/` : `${API_BASE}/resource/api/resources/`;
+            const method = editId ? 'PATCH' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+                
+                if (res.ok) {
+                    closeModal();
+                    fetchUploads();
+                } else {
+                    alert("Operation failed.");
+                }
+            } catch(e) {
+                console.error(e);
+                alert("An error occurred.");
+            } finally {
+                btn.disabled = false; btn.innerHTML = editId ? 'Save Changes' : 'Upload & Publish';
+            }
+        });
 
         async function fetchUploads() {
             const tbody = document.getElementById('tableBody');
@@ -172,6 +334,7 @@
                         <td>${r.view_count}</td>
                         <td style="color:rgba(255,255,255,0.5);">${new Date(r.created_at).toLocaleDateString()}</td>
                         <td>
+                            <button class="btn-action btn-edit" onclick="openEditModal(${r.id}, '${r.title.replace(/'/g, "\\'")}', '${r.description ? r.description.replace(/'/g, "\\'") : ''}', ${r.subject ? r.subject.id : "''"}, '${r.file_type}')" title="Edit"><i class="fas fa-edit"></i></button>
                             <button class="btn-action" onclick="deleteUpload(${r.id})" title="Delete"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>

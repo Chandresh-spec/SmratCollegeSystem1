@@ -130,6 +130,7 @@
         <div class="nav-items">
             <a href="teacher.html" class="nav-item active"><i class="fas fa-home"></i> Dashboard</a>
             <a href="myuploads.html" class="nav-item"><i class="fas fa-folder"></i> My Uploads</a>
+            <a href="classroom.html" class="nav-item"><i class="fas fa-comments"></i> Classroom Chat</a>
             <a href="notices.html" class="nav-item"><i class="fas fa-bullhorn"></i> Notices</a>
         </div>
         <div class="user-profile">
@@ -241,8 +242,9 @@
         </div>
     </div>
 
+    <script src="config.js"></script>
     <script>
-        const API_BASE = 'http://127.0.0.1:8000';
+        
         const token = localStorage.getItem('access_token');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
 
