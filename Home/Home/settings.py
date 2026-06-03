@@ -17,7 +17,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-fallback-key-c
 DEBUG = os.environ.get('RENDER') is None
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://smratcollegesystem.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://smartcollegesystem.onrender.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
