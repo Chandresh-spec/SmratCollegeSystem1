@@ -5,10 +5,14 @@ Django settings for Home project.
 from pathlib import Path
 from datetime import timedelta
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-hbgdoy-un-noz#9g9r-zgm#kik+ks0)+25u)m0v%$wl9re&qtr'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-fallback-key-change-in-production')
 
 DEBUG = os.environ.get('RENDER') is None
 
@@ -119,9 +123,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'canaracollege5@gmail.com'     
-EMAIL_HOST_PASSWORD = 'pchg ptki vguh qnqe'        
-DEFAULT_FROM_EMAIL = 'canaracollege5@gmail.com' 
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', os.environ.get('EMAIL_HOST_USER', ''))
 
 # ════════════════════════════════════════════════
 # CACHE (for OTP storage)
