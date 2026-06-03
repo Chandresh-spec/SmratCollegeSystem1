@@ -3,4 +3,4 @@
 // const API_BASE = 'http://127.0.0.1:8000';
 
 // Production URL for Render
-const API_BASE = 'https://smartcollegesystem.onrender.com';
+const API_BASE = 'https://smratcollegesystem1-2.onrender.com';
