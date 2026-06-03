@@ -14,10 +14,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-fallback-key-change-in-production')
 
-DEBUG = os.environ.get('RENDER') is None
+DEBUG = os.environ.get('RENDER') is None and os.environ.get('RAILWAY_ENVIRONMENT') is None
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://smratcollegesystem1-2.onrender.com']
+CSRF_TRUSTED_ORIGINS = [
+    'https://smratcollegesystem1-2.onrender.com',
+    'https://*.up.railway.app', # Default Railway domain wildcard
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
