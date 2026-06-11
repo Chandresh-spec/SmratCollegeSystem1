@@ -2,13 +2,17 @@ services:
   - type: web
     name: SmratCollegeSystem
     runtime: python
+    region: oregon
+    plan: free
     buildCommand: ./build.sh
-    startCommand: cd Home && gunicorn Home.wsgi:application --bind 0.0.0.0:$PORT --workers 1
+    startCommand: cd Home && gunicorn Home.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
     envVars:
       - key: RENDER
         value: true
+      - key: PYTHON_VERSION
+        value: 3.12.2
       - key: DJANGO_SECRET_KEY
-        sync: false
+        generateValue: true
       - key: EMAIL_HOST_USER
         sync: false
       - key: EMAIL_HOST_PASSWORD

@@ -18,8 +18,9 @@ DEBUG = os.environ.get('RENDER') is None and os.environ.get('RAILWAY_ENVIRONMENT
 
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
-    'https://smratcollegesystem1-2.onrender.com',
-    'https://*.up.railway.app', # Default Railway domain wildcard
+    'https://smratcollegesystem1-2-hbkm.onrender.com',
+    'https://*.onrender.com',
+    'https://*.up.railway.app',
 ]
 
 INSTALLED_APPS = [
@@ -100,6 +101,25 @@ STATICFILES_DIRS = [BASE_DIR.parent / 'frontend']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# WhiteNoise compressed static file storage
+STORAGES = {
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
+
+# ════════════════════════════════════════════════
+# Production security (only on Render)
+# ════════════════════════════════════════════════
+if os.environ.get('RENDER'):
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
