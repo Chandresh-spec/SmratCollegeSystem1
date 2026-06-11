@@ -114,7 +114,8 @@ STORAGES = {
 # ════════════════════════════════════════════════
 if os.environ.get('RENDER'):
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
+    # Note: Do NOT set SECURE_SSL_REDIRECT — Render handles HTTPS at the
+    # load balancer level. Enabling it breaks Render's internal health checks.
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_HSTS_SECONDS = 31536000
