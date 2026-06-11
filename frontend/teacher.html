@@ -340,11 +340,12 @@
                     fetchDashboardData();
                     alert("Resource uploaded successfully!");
                 } else {
-                    alert("Failed to upload.");
+                    const errText = await res.text();
+                    alert(`Failed to upload. Server said: ${errText}`);
                 }
             } catch(e) {
                 console.error(e);
-                alert("Upload error.");
+                alert(`Upload error: ${e.message}`);
             } finally {
                 btn.disabled = false; btn.innerHTML = 'Upload & Publish';
             }
