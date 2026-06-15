@@ -842,7 +842,14 @@
         typingMsg.remove();
         const data = await res.json();
         
-        let answer = data?.answer || data?.error || "Sorry, I could not generate a response.";
+        if (res.status === 401) {
+            addMessageUI("Your login session has expired. Please log out and log back in.", "bot");
+            isWaiting = false;
+            sendBtn.style.opacity = "1";
+            return;
+        }
+        
+        let answer = data?.answer || data?.error || data?.detail || "Sorry, I could not generate a response.";
         addMessageUI(answer, "bot");
         currentMessages.push({ text: answer, sender: "bot" });
         saveSession();
