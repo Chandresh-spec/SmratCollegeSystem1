@@ -16,19 +16,16 @@ def ask_llm(context, question):
     if context and context.strip():
         # Trim context to prevent context window overflow
         context = context[:6000]
-        system_prompt = (
-            "You are a helpful AI assistant. Answer the user's question using the provided context from their document. "
-            "If the context contains information relevant to the question, provide a detailed answer based on it. "
+        user_prompt = (
+            "System Instruction: You are a helpful AI assistant. Answer the user's question using the provided context. "
             "If the context does NOT contain any information related to the question at all, "
-            "say: 'This topic is not covered in the uploaded document.'"
+            "say: 'This topic is not covered in the uploaded document.'\n\n"
+            f"--- Document Context ---\n{context}\n--- End Context ---\n\nQuestion: {question}"
         )
-        user_prompt = f"--- Document Context ---\n{context}\n--- End Context ---\n\nQuestion: {question}"
     else:
-        system_prompt = "You are a helpful AI assistant."
         user_prompt = f"Question: {question}"
 
     messages = [
-        {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt}
     ]
 
@@ -38,7 +35,10 @@ def ask_llm(context, question):
                 messages=messages,
                 max_tokens=512
             )
-            return response.choices[0].message.content.strip()
+            content = response.choices[0].message.content.strip()
+            if not content:
+                raise ValueError("Model returned an empty string.")
+            return content
         except Exception as e:
             print(f"Hugging Face attempt {attempt+1} failed: {e}")
             if attempt == 1:
