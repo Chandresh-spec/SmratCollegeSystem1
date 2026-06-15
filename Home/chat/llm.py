@@ -10,8 +10,8 @@ def ask_llm(context, question):
     if not api_key:
         return "HUGGINGFACE_API_KEY is not set. Please add it to your Railway environment variables."
 
-    # Using Phi-3, an extremely fast and reliable chat model to prevent timeouts
-    client = InferenceClient("microsoft/Phi-3-mini-4k-instruct", token=api_key)
+    # Using Zephyr, which is natively supported by the Hugging Face free chat API
+    client = InferenceClient("HuggingFaceH4/zephyr-7b-beta", token=api_key)
 
     if context and context.strip():
         # Trim context to prevent context window overflow
