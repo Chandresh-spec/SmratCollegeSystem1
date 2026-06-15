@@ -10,8 +10,8 @@ def ask_llm(context, question):
     if not api_key:
         return "HUGGINGFACE_API_KEY is not set. Please add it to your Railway environment variables."
 
-    # Using Zephyr, a highly reliable model for instruction following
-    client = InferenceClient("HuggingFaceH4/zephyr-7b-beta", token=api_key)
+    # Using Mistral 7B, a fast and highly available model that is rarely asleep on the free tier
+    client = InferenceClient("mistralai/Mistral-7B-Instruct-v0.3", token=api_key)
 
     if context and context.strip():
         # Trim context to prevent context window overflow
