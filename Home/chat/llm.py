@@ -41,6 +41,8 @@ def ask_llm(context, question):
             return response.choices[0].message.content.strip()
         except Exception as e:
             print(f"Hugging Face attempt {attempt+1} failed: {e}")
+            if attempt == 1:
+                return f"Hugging Face API Error: {str(e)}"
             time.sleep(1)
             
     return "The AI service is taking too long to respond. Please try again in a moment."
