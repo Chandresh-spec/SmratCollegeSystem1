@@ -278,13 +278,13 @@
 </div>
 
 <script src="config.js"></script>
+<script src="auth.js"></script>
 <script>
   // API endpoint
   const API = `${API_BASE}/Genai/api/genai/`;
 
-  // read access token from URL — passed by student.html when opening this page
-  const urlParams = new URLSearchParams(window.location.search);
-  const ACCESS_TOKEN = urlParams.get("token") || "";
+  // Read access token from localStorage (shared auth system)
+  let ACCESS_TOKEN = localStorage.getItem("access_token") || "";
 
   let isSendingMsg = false;
 
@@ -334,11 +334,10 @@
     console.log("Sending question:", q);
 
     try {
-      const res = await fetch(API, {
+      const res = await authFetch(API, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${ACCESS_TOKEN}`   // <-- token added here
         },
         body: JSON.stringify({
           question: q

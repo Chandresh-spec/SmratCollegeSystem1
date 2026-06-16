@@ -16,8 +16,19 @@ urlpatterns = [
     path('resource/api/', include('Resource.urls')),
     path('notice/api/', include('notices.urls')),
     path('Genai/api/', include('chat.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + [
-    # Catch-all MUST be last — serves frontend HTML/JS/CSS files
+]
+
+# Always serve media files (works in both DEBUG and production/Railway).
+# Django's static() helper only works in DEBUG mode, so we add an explicit
+# media-serving pattern that works regardless.
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', serve, {
+        'document_root': settings.MEDIA_ROOT,
+    }),
+]
+
+# Catch-all MUST be last — serves frontend HTML/JS/CSS files
+urlpatterns += [
     re_path(r'^(?P<path>.*)$', serve, {
         'document_root': os.path.join(settings.BASE_DIR.parent, 'frontend'),
     }),

@@ -43,7 +43,8 @@ class UploadPDFView(APIView):
 
         try:
             # Save the PDF to disk so it survives server restarts
-            upload_dir = os.path.join("media", "rag_uploads")
+            from django.conf import settings
+            upload_dir = os.path.join(settings.MEDIA_ROOT, "rag_uploads")
             os.makedirs(upload_dir, exist_ok=True)
             
             file_name = f"{subject_id}_{pdf.name}"
@@ -86,7 +87,8 @@ class ChatView(APIView):
             saved_path = UPLOAD_REGISTRY.get(subject_id)
             if not saved_path:
                 # Check if there's a file on disk for this subject_id
-                upload_dir = os.path.join("media", "rag_uploads")
+                from django.conf import settings
+                upload_dir = os.path.join(settings.MEDIA_ROOT, "rag_uploads")
                 if os.path.exists(upload_dir):
                     for fname in os.listdir(upload_dir):
                         if fname.startswith(subject_id):

@@ -150,6 +150,7 @@
     </a>
 
     <script src="config.js"></script>
+    <script src="auth.js"></script>
     <script>
         
         const token = localStorage.getItem('access_token');
@@ -194,9 +195,8 @@
 
         async function recordDownload(id, url) {
             try {
-                await fetch(`${API_BASE}/resource/api/student/resources/${id}/download/`, {
+                await authFetch(`${API_BASE}/resource/api/student/resources/${id}/download/`, {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` }
                 });
                 window.open(url, '_blank');
             } catch(e) {
@@ -248,9 +248,7 @@
                     ? `${API_BASE}/resource/api/student/search/?q=${encodeURIComponent(query)}`
                     : `${API_BASE}/resource/api/student/dashboard/`;
                 
-                const res = await fetch(url, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const res = await authFetch(url);
                 
                 if (res.status === 401) return logout();
                 

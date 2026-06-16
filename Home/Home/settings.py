@@ -110,12 +110,12 @@ STORAGES = {
 }
 
 # ════════════════════════════════════════════════
-# Production security (only on Render)
+# Production security (Render or Railway)
 # ════════════════════════════════════════════════
-if os.environ.get('RENDER'):
+if os.environ.get('RENDER') or os.environ.get('RAILWAY_ENVIRONMENT'):
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    # Note: Do NOT set SECURE_SSL_REDIRECT — Render handles HTTPS at the
-    # load balancer level. Enabling it breaks Render's internal health checks.
+    # Note: Do NOT set SECURE_SSL_REDIRECT — the platform handles HTTPS at the
+    # load balancer level. Enabling it breaks internal health checks.
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_HSTS_SECONDS = 31536000

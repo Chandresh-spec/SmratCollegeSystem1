@@ -243,6 +243,7 @@
     </div>
 
     <script src="config.js"></script>
+    <script src="auth.js"></script>
     <script>
         
         const token = localStorage.getItem('access_token');
@@ -267,9 +268,7 @@
 
         async function fetchDashboardData() {
             try {
-                const res = await fetch(`${API_BASE}/resource/api/faculty/dashboard/`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const res = await authFetch(`${API_BASE}/resource/api/faculty/dashboard/`);
                 if (res.status === 401) return logout();
                 const data = await res.json();
                 
@@ -305,9 +304,7 @@
             const select = document.getElementById('resSubject');
             if (select.options.length > 1) return; // already loaded
             try {
-                const res = await fetch(`${API_BASE}/academic/api/subjects/`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const res = await authFetch(`${API_BASE}/academic/api/subjects/`);
                 const data = await res.json();
                 
                 // Show all subjects for now, or filter by logged in faculty
@@ -329,9 +326,8 @@
             formData.append('file', document.getElementById('resFile').files[0]);
 
             try {
-                const res = await fetch(`${API_BASE}/resource/api/resources/`, {
+                const res = await authFetch(`${API_BASE}/resource/api/resources/`, {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` },
                     body: formData
                 });
                 
