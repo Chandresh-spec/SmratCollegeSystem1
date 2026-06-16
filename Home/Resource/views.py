@@ -127,43 +127,49 @@ class StudentDashboardView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = request.user
-        if user.role != 'student':
-            return Response({"error": "Only students allowed"}, status=403)
+        try:
+            user = request.user
+            if user.role != 'student':
+                return Response({"error": "Only students allowed"}, status=403)
 
-        semester = user.sem
-        if not semester:
-            return Response({"error": "Student semester not set"}, status=400)
+            semester = user.sem
+            if not semester:
+                return Response({"error": "Student semester not set"}, status=400)
 
-        recent = Resource.objects.filter(
-            subject__sem__sem_nmbr=semester, status='APPROVED'
-        ).select_related(
-            'subject', 'subject__sem', 'subject__faculty', 'uploaded_by'
-        ).order_by('-created_at')[:10]
+            recent = Resource.objects.filter(
+                subject__sem__sem_nmbr=semester, status='APPROVED'
+            ).select_related(
+                'subject', 'subject__sem', 'subject__faculty', 'uploaded_by'
+            ).order_by('-created_at')[:10]
 
-        downloads = ResourceDownload.objects.filter(student=user).count()
-        my_uploads = Resource.objects.filter(uploaded_by=user).count()
-        pending = Resource.objects.filter(uploaded_by=user, status='PENDING').count()
-        approved = Resource.objects.filter(uploaded_by=user, status='APPROVED').count()
+            downloads = ResourceDownload.objects.filter(student=user).count()
+            my_uploads = Resource.objects.filter(uploaded_by=user).count()
+            pending = Resource.objects.filter(uploaded_by=user, status='PENDING').count()
+            approved = Resource.objects.filter(uploaded_by=user, status='APPROVED').count()
 
-        subjects = Subject.objects.filter(sem__sem_nmbr=semester)
-        subject_stats = [{
-            "subject": s.sub_name,
-            "code": s.sub_code,
-            "total_files": Resource.objects.filter(subject=s, status='APPROVED').count()
-        } for s in subjects]
+            subjects = Subject.objects.filter(sem__sem_nmbr=semester)
+            subject_stats = [{
+                "subject": s.sub_name,
+                "code": s.sub_code,
+                "total_files": Resource.objects.filter(subject=s, status='APPROVED').count()
+            } for s in subjects]
 
-        return Response({
-            "student": {"name": user.username, "usn": user.usn or "N/A", "semester": semester},
-            "recent_resources": ResourceSerializer(recent, many=True).data,
-            "activity": {
-                "downloads": downloads,
-                "my_uploads": my_uploads,
-                "pending": pending,
-                "approved": approved
-            },
-            "resources_by_subject": subject_stats
-        })
+            recent_data = ResourceSerializer(recent, many=True).data
+
+            return Response({
+                "student": {"name": user.username, "usn": user.usn or "N/A", "semester": semester},
+                "recent_resources": recent_data,
+                "activity": {
+                    "downloads": downloads,
+                    "my_uploads": my_uploads,
+                    "pending": pending,
+                    "approved": approved
+                },
+                "resources_by_subject": subject_stats
+            })
+        except Exception as e:
+            import traceback
+            return Response({"error": f"Internal Server Error: {str(e)}", "traceback": traceback.format_exc()}, status=500)
 
 
 # ─── Resource Filter ─────────────────────────────────────────────────
