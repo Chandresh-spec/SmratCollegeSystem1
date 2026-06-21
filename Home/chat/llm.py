@@ -7,35 +7,40 @@ def ask_llm(context, question):
     Sends a question + context to Hugging Face Inference API.
     """
     api_key = os.environ.get("HUGGINGFACE_API_KEY")
-    if not api_key:
-        return "HUGGINGFACE_API_KEY is not set. Please add it to your Railway environment variables."
+    if not api_key or api_key == "your_huggingface_key_here":
+        return "HUGGINGFACE_API_KEY is not set or is using the default placeholder. Please add a valid Hugging Face token to your .env file."
 
-    # Using Mistral, which is natively supported by the Hugging Face free chat API
-    client = InferenceClient("mistralai/Mistral-7B-Instruct-v0.3", token=api_key)
+    from openai import OpenAI
 
     if context and context.strip():
         # Trim context to prevent context window overflow
         context = context[:6000]
         user_prompt = (
-            "System Instruction: You are a helpful AI assistant. Answer the user's question using the provided context. "
-            "If the context does NOT contain any information related to the question at all, "
-            "say: 'This topic is not covered in the uploaded document.'\n\n"
-            f"--- Document Context ---\n{context}\n--- End Context ---\n\nQuestion: {question}"
+            "System Instruction: You are a helpful AI assistant. Answer the user's question using the provided context.\n\n"
+            f"--- Document Context ---\n{context}\n--- End Context ---\n\nQuestion: {question}\nAnswer:"
         )
     else:
-        user_prompt = f"Question: {question}"
-
-    messages = [
-        {"role": "user", "content": user_prompt}
-    ]
+        user_prompt = f"Question: {question}\nAnswer:"
 
     for attempt in range(2):
         try:
-            response = client.chat_completion(
-                messages=messages,
-                max_tokens=512
+            client = OpenAI(
+                base_url="https://router.huggingface.co/v1",
+                api_key=api_key,
             )
-            content = response.choices[0].message.content.strip()
+
+            completion = client.chat.completions.create(
+                model="deepseek-ai/DeepSeek-V4-Pro:novita",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": user_prompt
+                    }
+                ],
+            )
+            
+            content = completion.choices[0].message.content.strip()
+            
             if not content:
                 raise ValueError("Model returned an empty string.")
             return content

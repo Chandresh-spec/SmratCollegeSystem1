@@ -398,10 +398,28 @@
                 <p>Create your account</p>
             </div>
 
+            <!-- Step Progress Bar -->
+            <div class="progress-bar">
+                <div class="prog-step">
+                    <div class="prog-circle active" id="pc1">1</div>
+                    <span class="prog-label active" id="pl1">Details</span>
+                </div>
+                <div class="prog-line" id="pline1"></div>
+                <div class="prog-step">
+                    <div class="prog-circle" id="pc2">2</div>
+                    <span class="prog-label" id="pl2">Verify</span>
+                </div>
+                <div class="prog-step" style="margin-left:6px;">
+                    <div class="prog-line" id="pline2" style="margin:0 4px;"></div>
+                    <div class="prog-circle" id="pc3">✓</div>
+                    <span class="prog-label" id="pl3">Done</span>
+                </div>
+            </div>
+
             <div class="error-msg" id="errorMsg"></div>
             <div class="success-msg" id="successMsg"></div>
 
-            <!-- ═══════ Registration Form ═══════ -->
+            <!-- ═══════ STEP 1: Account Details ═══════ -->
             <div id="step1">
                 <div class="section-title">Account Information</div>
                 <div class="form-row">
@@ -468,10 +486,41 @@
                     <label for="agreeTerms">I agree to the Terms of Service and Privacy Policy</label>
                 </div>
 
-                <button type="button" class="btn-register" id="registerBtn">Create Account</button>
+                <button type="button" class="btn-register" id="step1Btn">Continue — Verify Email</button>
             </div>
 
-            <!-- ═══════ Success ═══════ -->
+            <!-- ═══════ STEP 2: Email OTP Verification ═══════ -->
+            <div id="step2" class="hidden">
+                <div style="text-align:center; margin-bottom:24px;">
+                    <div style="font-size:48px; margin-bottom:12px;">📧</div>
+                    <h2 style="font-size:20px; font-weight:700; margin-bottom:8px;">Verify Your Email</h2>
+                    <p style="color:rgba(255,255,255,0.5); font-size:14px; line-height:1.5;">
+                        We've sent a 6-digit code to<br>
+                        <strong style="color:#22d3ee;" id="emailDisplay"></strong>
+                    </p>
+                </div>
+
+                <div class="error-msg" id="otpError"></div>
+
+                <div class="otp-container">
+                    <input type="text" class="otp-input" maxlength="1" data-index="0">
+                    <input type="text" class="otp-input" maxlength="1" data-index="1">
+                    <input type="text" class="otp-input" maxlength="1" data-index="2">
+                    <input type="text" class="otp-input" maxlength="1" data-index="3">
+                    <input type="text" class="otp-input" maxlength="1" data-index="4">
+                    <input type="text" class="otp-input" maxlength="1" data-index="5">
+                </div>
+
+                <button type="button" class="btn-register" id="verifyBtn">Verify & Create Account</button>
+                <button type="button" class="btn-outline" id="backBtn">← Back to Details</button>
+
+                <div class="resend-timer" id="resendArea">
+                    <span id="timerText">Resend code in <strong id="countdown">60</strong>s</span>
+                    <button class="resend-btn hidden" id="resendBtn">Resend Code</button>
+                </div>
+            </div>
+
+            <!-- ═══════ STEP 3: Success ═══════ -->
             <div id="step3" class="hidden">
                 <div style="text-align:center; padding:20px 0;">
                     <div style="font-size:64px; margin-bottom:16px;">🎉</div>
@@ -481,7 +530,7 @@
                         Account Created!
                     </h2>
                     <p style="color:rgba(255,255,255,0.5); font-size:14px; margin-bottom:32px; line-height:1.6;">
-                        Your account is ready.<br>
+                        Your email has been verified and your account is ready.<br>
                         You can now sign in to access EduHub.
                     </p>
                     <a href="login.html" class="btn-register" style="display:inline-block; text-decoration:none; text-align:center;">
@@ -522,8 +571,36 @@
             }
         })();
 
+        // ── State ──
+        let registrationData = {};
+        let countdownTimer = null;
+
         const step1Div = document.getElementById('step1');
+        const step2Div = document.getElementById('step2');
         const step3Div = document.getElementById('step3');
+
+        // Progress bar elements
+        const pc = [document.getElementById('pc1'), document.getElementById('pc2'), document.getElementById('pc3')];
+        const pl = [document.getElementById('pl1'), document.getElementById('pl2'), document.getElementById('pl3')];
+        const plines = [document.getElementById('pline1'), document.getElementById('pline2')];
+
+        function setRegStep(n) {
+            [step1Div, step2Div, step3Div].forEach((s, i) => s.classList.toggle('hidden', i !== n));
+            // Hide login link on success step
+            document.getElementById('loginLinkDiv').classList.toggle('hidden', n === 2);
+
+            pc.forEach((c, i) => {
+                c.classList.remove('active', 'done');
+                if (i < n) { c.classList.add('done'); c.textContent = '✓'; }
+                if (i === n) c.classList.add('active');
+            });
+            pl.forEach((l, i) => {
+                l.classList.toggle('active', i === n);
+            });
+            plines.forEach((line, i) => {
+                line.classList.toggle('done', i < n);
+            });
+        }
 
         // ── Toggle student fields ──
         document.getElementById('role').addEventListener('change', (e) => {
@@ -560,10 +637,10 @@
         });
 
         // ══════════════════════════════════════
-        // Register directly (no email verification)
+        // STEP 1 → Collect data + send OTP
         // ══════════════════════════════════════
-        document.getElementById('registerBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('registerBtn');
+        document.getElementById('step1Btn').addEventListener('click', async () => {
+            const btn = document.getElementById('step1Btn');
             const errorMsg = document.getElementById('errorMsg');
             const successMsg = document.getElementById('successMsg');
             errorMsg.style.display = 'none';
@@ -592,7 +669,8 @@
                 return;
             }
 
-            const registrationData = {
+            // Save data
+            registrationData = {
                 username,
                 email,
                 password,
@@ -605,14 +683,128 @@
             }
 
             btn.disabled = true;
-            btn.textContent = 'Creating account...';
+            btn.textContent = 'Sending verification code...';
 
             try {
-                const res = await fetch(`${API_BASE}/api/register/`, {
+                // Send OTP to email for verification
+                const res = await fetch(`${API_BASE}/api/send-register-otp/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(registrationData)
+                    body: JSON.stringify({ email: email, username: username })
                 });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to send verification code');
+
+                document.getElementById('emailDisplay').textContent = email;
+                setRegStep(1);
+                startCountdown();
+            } catch (err) {
+                errorMsg.textContent = err.message;
+                errorMsg.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Continue — Verify Email';
+            }
+        });
+
+        // ── OTP input auto-focus ──
+        document.querySelectorAll('.otp-input').forEach((input, idx, arr) => {
+            input.addEventListener('input', (e) => {
+                const val = e.target.value;
+                if (val && idx < arr.length - 1) arr[idx + 1].focus();
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+                    arr[idx - 1].focus();
+                }
+            });
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text').trim();
+                if (paste.length === 6 && /^\d+$/.test(paste)) {
+                    arr.forEach((inp, i) => { inp.value = paste[i] || ''; });
+                    arr[5].focus();
+                }
+            });
+        });
+
+        // ── Countdown ──
+        function startCountdown() {
+            let seconds = 60;
+            const countdownEl = document.getElementById('countdown');
+            const timerText = document.getElementById('timerText');
+            const resendBtn = document.getElementById('resendBtn');
+            timerText.classList.remove('hidden');
+            resendBtn.classList.add('hidden');
+            countdownEl.textContent = seconds;
+
+            if (countdownTimer) clearInterval(countdownTimer);
+            countdownTimer = setInterval(() => {
+                seconds--;
+                countdownEl.textContent = seconds;
+                if (seconds <= 0) {
+                    clearInterval(countdownTimer);
+                    timerText.classList.add('hidden');
+                    resendBtn.classList.remove('hidden');
+                }
+            }, 1000);
+        }
+
+        // ── Resend OTP ──
+        document.getElementById('resendBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('resendBtn');
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+            try {
+                await fetch(`${API_BASE}/api/send-register-otp/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: registrationData.email, username: registrationData.username })
+                });
+                startCountdown();
+            } catch (err) {
+                // silently fail
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Resend Code';
+            }
+        });
+
+        // ── Back button ──
+        document.getElementById('backBtn').addEventListener('click', () => {
+            setRegStep(0);
+            if (countdownTimer) clearInterval(countdownTimer);
+        });
+
+        // ══════════════════════════════════════
+        // STEP 2 → Verify OTP + Register
+        // ══════════════════════════════════════
+        document.getElementById('verifyBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('verifyBtn');
+            const errDiv = document.getElementById('otpError');
+            errDiv.style.display = 'none';
+
+            const otp = Array.from(document.querySelectorAll('.otp-input')).map(i => i.value).join('');
+            if (otp.length !== 6) {
+                errDiv.textContent = 'Please enter the complete 6-digit code.';
+                errDiv.style.display = 'block';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Verifying & Creating account...';
+
+            try {
+                // Verify OTP and register in one step
+                const res = await fetch(`${API_BASE}/api/verify-register/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ...registrationData,
+                        otp: otp
+                    })
+                });
+
                 const data = await res.json();
 
                 if (!res.ok) {
@@ -622,16 +814,14 @@
                     throw new Error(errMsg);
                 }
 
-                // Show success
-                step1Div.classList.add('hidden');
-                step3Div.classList.remove('hidden');
-                document.getElementById('loginLinkDiv').classList.add('hidden');
+                if (countdownTimer) clearInterval(countdownTimer);
+                setRegStep(2);
             } catch (err) {
-                errorMsg.textContent = err.message;
-                errorMsg.style.display = 'block';
+                errDiv.textContent = err.message;
+                errDiv.style.display = 'block';
             } finally {
                 btn.disabled = false;
-                btn.textContent = 'Create Account';
+                btn.textContent = 'Verify & Create Account';
             }
         });
     </script>

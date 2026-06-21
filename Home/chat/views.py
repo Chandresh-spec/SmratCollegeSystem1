@@ -31,7 +31,10 @@ def _index_pdf_file(file_path, subject_id):
     return True
 
 
+from rest_framework.permissions import AllowAny
+
 class UploadPDFView(APIView):
+    permission_classes = [AllowAny]
     parser_classes = [MultiPartParser]
 
     def post(self, request):
@@ -70,6 +73,7 @@ class UploadPDFView(APIView):
 
 
 class ChatView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         subject_id = str(request.data.get("subject_id"))
         question = request.data.get("question")
@@ -146,6 +150,7 @@ class ChatView(APIView):
         return Response({"answer": answer})
 
 class GenAIView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         question = request.data.get("question")
         if not question:
