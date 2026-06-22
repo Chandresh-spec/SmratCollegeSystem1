@@ -2,9 +2,7 @@
 # exit on error
 set -o errexit
 
-# Install dependencies
-pip install -r requirements.txt
-
+# Dependencies are installed by Nixpacks install phase (nixpacks.toml)
 # Run Django management commands
 cd Home
 python manage.py makemigrations --no-input
