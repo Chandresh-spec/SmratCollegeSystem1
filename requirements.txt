@@ -11,6 +11,7 @@ django-cors-headers==4.9.0
 djangorestframework==3.16.1
 djangorestframework_simplejwt==5.5.1
 gunicorn==25.1.0
+huggingface-hub==0.23.0
 idna==3.11
 numpy==2.4.4
 openai
