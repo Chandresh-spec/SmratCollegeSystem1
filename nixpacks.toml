@@ -1,8 +1,2 @@
 [phases.setup]
 nixPkgs = ["...", "stdenv.cc.cc.lib", "zlib"]
-
-[phases.install]
-cmds = ["pip install -r requirements.txt"]
-
-[phases.build]
-cmds = ["bash ./build.sh"]
