@@ -1,0 +1,38 @@
+services:
+  web:
+    build: .
+    container_name: smart_college_app
+    restart: always
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - media_volume:/app/Home/media
+      - static_volume:/app/Home/staticfiles
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    container_name: smart_college_db
+    restart: always
+    environment:
+      POSTGRES_DB: smart_college_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  media_volume:
+  static_volume:

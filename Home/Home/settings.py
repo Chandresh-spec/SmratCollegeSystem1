@@ -19,14 +19,39 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-fallback-key-change-in-production')
 
-DEBUG = os.environ.get('RENDER') is None and os.environ.get('RAILWAY_ENVIRONMENT') is None
+DEBUG_ENV = os.environ.get('DEBUG')
+if DEBUG_ENV is not None:
+    DEBUG = DEBUG_ENV.lower() in ('true', '1', 'yes')
+else:
+    # Default to True locally, False if running on cloud platforms (Render, Railway, AWS)
+    is_cloud = bool(
+        os.environ.get('RENDER') or
+        os.environ.get('RAILWAY_ENVIRONMENT') or
+        os.environ.get('AWS_EXECUTION_ENV') or
+        os.environ.get('AWS_REGION') or
+        os.environ.get('PRODUCTION')
+    )
+    DEBUG = not is_cloud
 
-ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = [
-    'https://smratcollegesystem1-2-hbkm.onrender.com',
-    'https://*.onrender.com',
-    'https://*.up.railway.app',
-]
+# Allowed Hosts configuration
+allowed_hosts_env = os.environ.get('ALLOWED_HOSTS')
+if allowed_hosts_env:
+    ALLOWED_HOSTS = [h.strip() for h in allowed_hosts_env.split(',') if h.strip()]
+else:
+    ALLOWED_HOSTS = ['*']
+
+# CSRF Trusted Origins configuration
+csrf_env = os.environ.get('CSRF_TRUSTED_ORIGINS')
+if csrf_env:
+    CSRF_TRUSTED_ORIGINS = [o.strip() for o in csrf_env.split(',') if o.strip()]
+else:
+    CSRF_TRUSTED_ORIGINS = [
+        'https://smratcollegesystem1-2-hbkm.onrender.com',
+        'https://*.onrender.com',
+        'https://*.up.railway.app',
+        'http://localhost:8000',
+        'http://127.0.0.1:8000',
+    ]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -126,12 +151,10 @@ STORAGES = {
 }
 
 # ════════════════════════════════════════════════
-# Production security (Render or Railway)
+# Production security (AWS, Render, Railway, etc.)
 # ════════════════════════════════════════════════
-if os.environ.get('RENDER') or os.environ.get('RAILWAY_ENVIRONMENT'):
+if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    # Note: Do NOT set SECURE_SSL_REDIRECT — the platform handles HTTPS at the
-    # load balancer level. Enabling it breaks internal health checks.
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_HSTS_SECONDS = 31536000
